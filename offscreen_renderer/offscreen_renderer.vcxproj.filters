@@ -45,9 +45,6 @@
     <ClCompile Include="glcore.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="glsstorage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="glbuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -87,9 +84,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="glcore.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="glsstorage.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="glbuffer.hpp">
