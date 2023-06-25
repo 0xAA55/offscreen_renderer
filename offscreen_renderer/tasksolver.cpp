@@ -75,9 +75,16 @@ namespace RenderTaskSolver
 
     TaskSolver::TaskSolver(Context& gl, const IniFile& TaskConf) :
         gl(gl),
-        Config(TaskConf)
+        Config(TaskConf),
+        BBVB(gl, std::vector<float>
+            {
+                -1, -1,
+                1, -1,
+                -1, 1,
+                1, 1
+            }, gl.STATIC_DRAW),
+        BBEB(gl, std::vector<uint8_t>{ 0, 1, 2, 1, 3, 2 }, gl.STATIC_DRAW)
     {
-        InitDraw();
 
         auto TaskList = split(Config.sections["common"]["tasks"], ",");
         for (auto& tn : TaskList)
@@ -214,7 +221,7 @@ namespace RenderTaskSolver
                 {
                     if (s->GetSize() != size)
                     {
-                        throw InvalidTaskConfig((std::stringstream() << "Size of the shader storage `" << sn << "` is " << t->GetSize() << " bytes, it doesn't match the attrib `size=" << size_str << "`").str());
+                        throw InvalidTaskConfig((std::stringstream() << "Size of the shader storage `" << sn << "` is " << s->GetSize() << " bytes, it doesn't match the attrib `size=" << size_str << "`").str());
                     }
                 }
                 else
@@ -239,34 +246,6 @@ namespace RenderTaskSolver
     TaskSolver::TaskSolver(Context& gl, std::string ConfFile) :
         TaskSolver(gl, IniFile(ConfFile))
     {
-    }
-
-    void TaskSolver::InitDraw()
-    {
-        const float VBData[] = {
-            -1, -1,
-            1, -1,
-            -1, 1,
-            1, 1
-        };
-
-        const uint8_t EBData[] = {
-            0, 1, 2, 1, 3, 2
-        };
-
-        gl.GenBuffers(1, &BBVB);
-        BufferBind<gl.ARRAY_BUFFER> b1(gl, BBVB);
-        gl.BufferData(gl.ARRAY_BUFFER, sizeof VBData, VBData, gl.STATIC_DRAW);
-
-        gl.GenBuffers(1, &BBEB);
-        BufferBind<gl.ELEMENT_ARRAY_BUFFER> b2(gl, BBEB);
-        gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, sizeof EBData, EBData, gl.STATIC_DRAW);
-    }
-
-    TaskSolver::~TaskSolver()
-    {
-        gl.DeleteBuffers(1, &BBVB);
-        gl.DeleteBuffers(1, &BBEB);
     }
 
     void TaskSolver::SolveTasks()

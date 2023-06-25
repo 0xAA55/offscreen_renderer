@@ -33,17 +33,16 @@ namespace RenderTaskSolver
         IniFile Config;
         std::vector<std::shared_ptr<RenderTask>> Tasks;
         std::unordered_set<std::string> TextureSet;
-        std::unordered_map<std::string, std::shared_ptr<TaskTexture>> TextureMap;
         std::unordered_set<std::string> ShaderStorageSet;
+        std::unordered_map<std::string, std::shared_ptr<TaskTexture>> TextureMap;
         std::unordered_map<std::string, std::shared_ptr<TaskShaderStorage>> ShaderStorageMap;
 
-        GLuint BBVB, BBEB;
-        void InitDraw();
+        ArrayBuffer BBVB;
+        ElementArrayBuffer BBEB;
 
     public:
         TaskSolver(Context& gl, const IniFile& TaskConf);
         TaskSolver(Context& gl, std::string ConfFile);
-        ~TaskSolver();
 
         void SolveTasks();
     };
