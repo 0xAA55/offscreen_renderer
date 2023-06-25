@@ -22,7 +22,7 @@ namespace GLObjects
 		Buffer(Context& gl, const void* Data, GLsizeiptr Size, GLenum Usage);
 		template<typename VectorType>
 		Buffer(Context& gl, const std::vector<VectorType>& Data, GLenum Usage):
-			Buffer(gl, Data.data(), Data.size(), Usage)
+			Buffer(gl, Data.data(), Data.size() * sizeof(VectorType), Usage)
 		{
 		}
 		~Buffer();
