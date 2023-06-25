@@ -25,6 +25,20 @@ namespace GLObjects
 	}
 
 	template<GLenum Target>
+	BufferBind<Target>::BufferBind(Context& gl, GLuint BO) :
+		gl(gl),
+		BO(BO)
+	{
+		gl.BindBuffer(Target, BO);
+	}
+
+	template<GLenum Target>
+	BufferBind<Target>::~BufferBind()
+	{
+		gl.BindBuffer(Target, 0);
+	}
+
+	template<GLenum Target>
 	void Buffer<Target>::GetData(void* Buffer, GLsizeiptr BufferSize, GLsizeiptr Offset)
 	{
 		BufferBind<Target> b(gl, BO);
@@ -38,18 +52,33 @@ namespace GLObjects
 		gl.BufferSubData(Target, Offset, Size, Data);
 	}
 
-	template Buffer<Context::ARRAY_BUFFER>;
-	template Buffer<Context::ATOMIC_COUNTER_BUFFER>;
-	template Buffer<Context::COPY_READ_BUFFER>;
-	template Buffer<Context::COPY_WRITE_BUFFER>;
-	template Buffer<Context::DISPATCH_INDIRECT_BUFFER>;
-	template Buffer<Context::DRAW_INDIRECT_BUFFER>;
-	template Buffer<Context::ELEMENT_ARRAY_BUFFER>;
-	template Buffer<Context::PIXEL_PACK_BUFFER>;
-	template Buffer<Context::PIXEL_UNPACK_BUFFER>;
-	template Buffer<Context::QUERY_BUFFER>;
-	template Buffer<Context::SHADER_STORAGE_BUFFER>;
-	template Buffer<Context::TEXTURE_BUFFER>;
-	template Buffer<Context::TRANSFORM_FEEDBACK_BUFFER>;
-	template Buffer<Context::UNIFORM_BUFFER>;
+	template ArrayBuffer;
+	template AtomicCounterBuffer;
+	template CopyReadBuffer;
+	template CopyWriteBuffer;
+	template DispatchIndirectBuffer;
+	template DrawIndirectBuffer;
+	template ElementArrayBuffer;
+	template PixelPackBuffer;
+	template PixelUnpackBuffer;
+	template QueryBuffer;
+	template ShaderStorageBuffer;
+	template TextureBuffer;
+	template TransformFeedbackBuffer;
+	template UniformBuffer;
+
+	template ArrayBufferBind;
+	template AtomicCounterBufferBind;
+	template CopyReadBufferBind;
+	template CopyWriteBufferBind;
+	template DispatchIndirectBufferBind;
+	template DrawIndirectBufferBind;
+	template ElementArrayBufferBind;
+	template PixelPackBufferBind;
+	template PixelUnpackBufferBind;
+	template QueryBufferBind;
+	template ShaderStorageBufferBind;
+	template TextureBufferBind;
+	template TransformFeedbackBufferBind;
+	template UniformBufferBind;
 }
