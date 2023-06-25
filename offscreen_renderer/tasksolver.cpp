@@ -144,14 +144,12 @@ namespace RenderTaskSolver
                 auto& lpath = td["load"];
                 t = std::make_shared<TaskTexture>(gl, tn, lpath, GetFormatByExt(lpath));
             }
-            else if (td.contains("size"))
+            if (td.contains("size"))
             {
                 int w, h;
-                auto sizestr = td["size"];
-                auto sizesplit = split(sizestr, ',');
-                std::stringstream ss;
-                ss << "Invalid attrib `size=" << sizestr << "` of texture `" << tn << "`";
-                auto badsize_error = InvalidTaskConfig(ss.str());
+                auto size_str = td["size"];
+                auto sizesplit = split(size_str, ',');
+                auto badsize_error = InvalidTaskConfig((std::stringstream() << "Invalid attrib `size=" << size_str << "` of texture `" << tn << "`").str());
                 if (sizesplit.size() != 2)
                     throw badsize_error;
                 else
@@ -162,13 +160,22 @@ namespace RenderTaskSolver
                     h = std::stoi(sizesplit[0]);
                     if (w <= 0 || h <= 0) throw badsize_error;
                 }
-                t = std::make_shared<TaskTexture>(gl, tn, w, h, GetTexFormatByStr(td["format"]));
+                if (t)
+                {
+                    if (static_cast<int>(t->GetWidth()) != w ||
+                        static_cast<int>(t->GetHeight()) != h)
+                    {
+                        throw InvalidTaskConfig((std::stringstream() << "Size of the texture `" << tn << "` is " << t->GetWidth() << "x" << t->GetHeight() << ", it doesn't match the attrib `size=" << size_str << "`").str());
+                    }
+                }
+                else
+                {
+                    t = std::make_shared<TaskTexture>(gl, tn, w, h, GetTexFormatByStr(td["format"]));
+                }
             }
-            else
+            if (!t)
             {
-                std::stringstream ss;
-                ss << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.";
-                throw InvalidTaskConfig(ss.str());
+                throw InvalidTaskConfig((std::stringstream() << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.").str());
             }
             t->SavePath = spath;
             t->SaveFormat = sfmt;
@@ -181,16 +188,13 @@ namespace RenderTaskSolver
             std::shared_ptr<TaskShaderStorage> s;
             if (sd.contains("load"))
             {
-                auto& lpath = sd["load"];
-                s = std::make_shared<TaskShaderStorage>(gl, lpath);
+                s = std::make_shared<TaskShaderStorage>(gl, sd["load"]);
             }
-            else if (sd.contains("size"))
+            if (sd.contains("size"))
             {
                 int64_t size;
                 auto& size_str = sd["size"];
-                std::stringstream ss;
-                ss << "Invalid attrib `size=" << size_str << "` of shader storage `" << sn << "`";
-                auto badsize_error = InvalidTaskConfig(ss.str());
+                auto badsize_error = InvalidTaskConfig((std::stringstream() << "Invalid attrib `size=" << size_str << "` of shader storage `" << sn << "`").str());
                 trim(size_str);
                 if (size_str.size() == 0) throw badsize_error;
                 if (size_str.starts_with("0x"))
@@ -206,13 +210,21 @@ namespace RenderTaskSolver
                     size = std::stoll(size_str);
                 }
                 if (size <= 0) throw badsize_error;
-                s = std::make_shared<TaskShaderStorage>(gl, nullptr, size);
+                if (s)
+                {
+                    if (s->GetSize() != size)
+                    {
+                        throw InvalidTaskConfig((std::stringstream() << "Size of the shader storage `" << sn << "` is " << t->GetSize() << " bytes, it doesn't match the attrib `size=" << size_str << "`").str());
+                    }
+                }
+                else
+                {
+                    s = std::make_shared<TaskShaderStorage>(gl, nullptr, size);
+                }
             }
-            else
+            if (!s)
             {
-                std::stringstream ss;
-                ss << "For shader storage `" << sn << "` must have a `load` attrib or a `size` attrib.";
-                throw InvalidTaskConfig(ss.str());
+                throw InvalidTaskConfig((std::stringstream() << "For shader storage `" << sn << "` must have a `load` attrib or a `size` attrib.").str());
             }
             s->SavePath = sd["save"];
             ShaderStorageMap.insert({ sn, s });
