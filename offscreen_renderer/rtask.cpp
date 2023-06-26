@@ -1,5 +1,6 @@
 #include "rtask.hpp"
 #include "tasksolver.hpp"
+#include "strutil.hpp"
 
 namespace RenderTaskSolver
 {
@@ -8,11 +9,22 @@ namespace RenderTaskSolver
     {
     }
 
+    std::vector<std::string> FilterStringWithLength(const std::vector<std::string>& input)
+    {
+        std::vector<std::string> ret;
+        for (auto i : input)
+        {
+            trim(i);
+            if (i.size()) ret.push_back(i);
+        }
+        return ret;
+    }
+
     RenderTask::RenderTask(TaskSolver& Solver, std::shared_ptr<TaskShader> Shader, std::vector<std::string> Inputs, std::vector<std::string> Outputs, std::vector<std::string> ShaderStorages) :
         gl(Solver.gl),
         Solver(Solver),
         Shader(Shader),
-        Inputs(Inputs), Outputs(Outputs), ShaderStorages(ShaderStorages)
+        Inputs(FilterStringWithLength(Inputs)), Outputs(FilterStringWithLength(Outputs)), ShaderStorages(FilterStringWithLength(ShaderStorages))
     {
     }
 
