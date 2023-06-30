@@ -31,6 +31,7 @@ namespace RenderTaskSolver
     protected:
         Context& gl;
         TaskSolver& Solver;
+        bool Batch;
         std::vector<std::string> Inputs;
         std::vector<std::string> Outputs;
         std::vector<std::string> ShaderStorages;
@@ -38,6 +39,10 @@ namespace RenderTaskSolver
 
     public:
         RenderTask(TaskSolver& Solver, std::shared_ptr<TaskShader> Shader, std::vector<std::string> Inputs, std::vector<std::string> Outputs, std::vector<std::string> ShaderStorages);
+
+        inline std::vector<std::string> GetInputs() const { return Inputs; }
+        inline std::vector<std::string> GetOutputs() const { return Outputs; }
+        inline std::vector<std::string> GetShaderStorages() const { return ShaderStorages; }
 
         virtual void OnLoadingFinished() = 0;
         virtual void Process() = 0;
