@@ -164,7 +164,7 @@ namespace RenderTaskSolver
                     trim(sizesplit[0]);
                     trim(sizesplit[1]);
                     w = std::stoi(sizesplit[0]);
-                    h = std::stoi(sizesplit[0]);
+                    h = std::stoi(sizesplit[1]);
                     if (w <= 0 || h <= 0) throw badsize_error;
                 }
                 if (t)
