@@ -13,13 +13,13 @@ namespace RenderTaskSolver
     class ShaderCompileError : public std::runtime_error
     {
     public:
-        ShaderCompileError(std::string what) noexcept;
+        ShaderCompileError(const std::string& what) noexcept;
     };
 
     class ShaderLinkageError : public std::runtime_error
     {
     public:
-        ShaderLinkageError(std::string what) noexcept;
+        ShaderLinkageError(const std::string& what) noexcept;
     };
 
     class TaskShader
@@ -27,17 +27,19 @@ namespace RenderTaskSolver
     protected:
         Context& gl;
         GLuint ShaderProgram;
+        std::string ShaderName;
 
         std::string GetShaderInfoLog(GLuint Shader);
-        std::string LoadShaderCodeFromFile(std::string FilePath);
-        void AttachShader(GLenum ShaderType, std::string ShaderCode);
+        std::string LoadShaderCodeFromFile(const std::string& FilePath);
+        void AttachShader(GLenum ShaderType, const std::string& ShaderCode);
 
     public:
-        TaskShader(Context& gl);
+        TaskShader(Context& gl, const std::string& ShaderName);
         ~TaskShader();
 
         std::string GetProgramInfoLog();
         inline operator GLuint() { return ShaderProgram; }
+        inline const std::string& GetShaderName() const { return ShaderName; }
     };
 
     class TaskShaderDraw : public TaskShader
@@ -52,7 +54,7 @@ namespace RenderTaskSolver
 
     public:
         TaskShaderDraw() = delete;
-        TaskShaderDraw(Context& gl, std::string FragmentShader, bool ArgIsShaderFilePath);
+        TaskShaderDraw(Context& gl, const std::string& ShaderName, const std::string& FragmentShader, bool ArgIsShaderFilePath);
     };
 
 
@@ -62,7 +64,7 @@ namespace RenderTaskSolver
 
     public:
         TaskShaderCompute() = delete;
-        TaskShaderCompute(Context& gl, std::string ComputeShader, bool ArgIsShaderFilePath);
+        TaskShaderCompute(Context& gl, const std::string& ShaderName, const std::string& ComputeShader, bool ArgIsShaderFilePath);
     };
 
 }

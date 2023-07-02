@@ -4,18 +4,19 @@
 
 namespace RenderTaskSolver
 {
-    ShaderCompileError::ShaderCompileError(std::string what) noexcept :
+    ShaderCompileError::ShaderCompileError(const std::string& what) noexcept :
         std::runtime_error(what)
     {
     }
 
-    ShaderLinkageError::ShaderLinkageError(std::string what) noexcept :
+    ShaderLinkageError::ShaderLinkageError(const std::string& what) noexcept :
         std::runtime_error(what)
     {
     }
 
-    TaskShader::TaskShader(Context& gl) :
+    TaskShader::TaskShader(Context& gl, const std::string& ShaderName) :
         gl(gl),
+        ShaderName(ShaderName),
         ShaderProgram(gl.CreateProgram())
     {
     }
@@ -31,7 +32,7 @@ namespace RenderTaskSolver
         return std::string(buf.get());
     }
 
-    std::string TaskShader::LoadShaderCodeFromFile(std::string FilePath)
+    std::string TaskShader::LoadShaderCodeFromFile(const std::string& FilePath)
     {
         std::ifstream ifs(FilePath);
         if (ifs.fail())
@@ -56,7 +57,7 @@ namespace RenderTaskSolver
         return std::string(buf.get());
     }
 
-    void TaskShader::AttachShader(GLenum ShaderType, std::string ShaderCode)
+    void TaskShader::AttachShader(GLenum ShaderType, const std::string& ShaderCode)
     {
         GLuint Shader = gl.CreateShader(ShaderType);
         gl.AttachShader(ShaderProgram, Shader);
@@ -71,8 +72,8 @@ namespace RenderTaskSolver
         if (!iv) throw ShaderCompileError(GetShaderInfoLog(Shader));
     }
 
-    TaskShaderDraw::TaskShaderDraw(Context& gl, std::string FragmentShader, bool ArgIsShaderFilePath) :
-        TaskShader(gl)
+    TaskShaderDraw::TaskShaderDraw(Context& gl, const std::string& ShaderName, const std::string& FragmentShader, bool ArgIsShaderFilePath) :
+        TaskShader(gl, ShaderName)
     {
         AttachShader(gl.VERTEX_SHADER, DefaultVertexShaderCode);
 
@@ -100,8 +101,8 @@ namespace RenderTaskSolver
         gl.DeleteProgram(ShaderProgram);
     }
 
-    TaskShaderCompute::TaskShaderCompute(Context& gl, std::string ComputeShader, bool ArgIsShaderFilePath) :
-        TaskShader(gl)
+    TaskShaderCompute::TaskShaderCompute(Context& gl, const std::string& ShaderName, const std::string& ComputeShader, bool ArgIsShaderFilePath) :
+        TaskShader(gl, ShaderName)
     {
         std::string ComputeShaderCode;
         if (ArgIsShaderFilePath)
