@@ -195,6 +195,7 @@
     <ClCompile Include="tasksolver.cpp" />
     <ClCompile Include="tasksstorage.cpp" />
     <ClCompile Include="tasktex.cpp" />
+    <ClCompile Include="taskthread.cpp" />
     <ClCompile Include="unibmp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +210,7 @@
     <ClInclude Include="tasksolver.hpp" />
     <ClInclude Include="tasksstorage.hpp" />
     <ClInclude Include="tasktex.hpp" />
+    <ClInclude Include="taskthread.hpp" />
     <ClInclude Include="unibmp.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
