@@ -8,22 +8,22 @@
 namespace UniformBitmap
 {
 
-	ReadBmpFileError::ReadBmpFileError(std::string what) noexcept :
+	ReadBmpFileError::ReadBmpFileError(const std::string& what) noexcept :
 		std::runtime_error(what)
 	{
 	}
 
-	WriteBmpFileError::WriteBmpFileError(std::string what) noexcept :
+	WriteBmpFileError::WriteBmpFileError(const std::string& what) noexcept :
 		std::runtime_error(what)
 	{
 	}
 
-	LoadImageError::LoadImageError(std::string what) noexcept :
+	LoadImageError::LoadImageError(const std::string& what) noexcept :
 		std::runtime_error(what)
 	{
 	}
 
-	SaveImageError::SaveImageError(std::string what) noexcept :
+	SaveImageError::SaveImageError(const std::string& what) noexcept :
 		std::runtime_error(what)
 	{
 	}
@@ -363,7 +363,7 @@ namespace UniformBitmap
 	// 被读入后的图像数据会被强制转换为：ARGB 格式，每通道 8 bit 位深，每个像素4字节，分别是：蓝，绿，红，Alpha
 	// 如果整个图像的Alpha通道皆为0（或者整个图像不包含Alpha通道）则读出来的位图的Alpha通道会被设置为最大值（即 255）
 	template<typename PixelType>
-	void Image<PixelType>::LoadBmp(std::string FilePath)
+	void Image<PixelType>::LoadBmp(const std::string& FilePath)
 	{
 		BitmapFileHeader BMFH;
 		BitmapInfoHeader BMIF;
@@ -760,7 +760,7 @@ namespace UniformBitmap
 	}
 
 	template<typename PixelType>
-	void Image<PixelType>::SaveToBmp24(std::string FilePath, bool InverseLineOrder) const
+	void Image<PixelType>::SaveToBmp24(const std::string& FilePath, bool InverseLineOrder) const
 	{
 		size_t Pitch;
 		uint32_t x, y;
@@ -814,7 +814,7 @@ namespace UniformBitmap
 	}
 
 	template<typename PixelType>
-	void Image<PixelType>::SaveToBmp32(std::string FilePath, bool InverseLineOrder) const
+	void Image<PixelType>::SaveToBmp32(const std::string& FilePath, bool InverseLineOrder) const
 	{
 		size_t Pitch;
 		uint32_t y;
@@ -931,7 +931,7 @@ namespace UniformBitmap
 	};
 
 	template<typename PixelType>
-	Image<PixelType>::Image(std::string FilePath) :
+	Image<PixelType>::Image(const std::string& FilePath) :
 		IsHDR(false)
 	{
 		try
@@ -988,7 +988,7 @@ namespace UniformBitmap
 	}
 
 	template<typename PixelType>
-	void Image<PixelType>::SaveToPNG(std::string FilePath) const
+	void Image<PixelType>::SaveToPNG(const std::string& FilePath) const
 	{
 		if (!std::is_same_v<PixelType, Pixel_RGBA8>)
 		{
@@ -1001,7 +1001,7 @@ namespace UniformBitmap
 	}
 
 	template<typename PixelType>
-	void Image<PixelType>::SaveToTGA(std::string FilePath) const
+	void Image<PixelType>::SaveToTGA(const std::string& FilePath) const
 	{
 		if (!std::is_same_v<PixelType, Pixel_RGBA8>)
 		{
@@ -1014,7 +1014,7 @@ namespace UniformBitmap
 	}
 
 	template<typename PixelType>
-	void Image<PixelType>::SaveToJPG(std::string FilePath, int Quality) const
+	void Image<PixelType>::SaveToJPG(const std::string& FilePath, int Quality) const
 	{
 		if (!std::is_same_v<PixelType, Pixel_RGBA8>)
 		{
@@ -1027,7 +1027,7 @@ namespace UniformBitmap
 	}
 
 	template<typename PixelType>
-	void Image<PixelType>::SaveToHDR(std::string FilePath) const
+	void Image<PixelType>::SaveToHDR(const std::string& FilePath) const
 	{
 		if (!std::is_same_v<PixelType, Pixel_RGBA32F>)
 		{
