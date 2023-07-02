@@ -1,16 +1,18 @@
 #include "tasktex.hpp"
 #include "unibmp.hpp"
-
-using namespace UniformBitmap;
+#include <sstream>
+#include <iostream>
 
 namespace RenderTaskSolver
 {
-    LoadTextureError::LoadTextureError(std::string what) noexcept:
+    using namespace UniformBitmap;
+
+    LoadTextureError::LoadTextureError(const std::string& what) noexcept:
         std::runtime_error(what)
     {
     }
 
-    SaveTextureError::SaveTextureError(std::string what) noexcept :
+    SaveTextureError::SaveTextureError(const std::string& what) noexcept :
         std::runtime_error(what)
     {
     }
@@ -34,9 +36,10 @@ namespace RenderTaskSolver
         }
     };
 
-    TaskTexture::TaskTexture(Context& gl, std::string Name, std::string LoadFrom, TexFileFormat Format) :
+    TaskTexture::TaskTexture(Context& gl, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format) :
         gl(gl), Name(Name), TF(TextureFormat::Unknown), SaveFormat(Format),
-        Width(0), Height(0), HasContent(false)
+        Width(0), Height(0), HasContent(false),
+        DontKeep(false)
     {
         gl.GenTextures(1, &glTex);
         BindTexture Binding(gl, gl.TEXTURE_2D, glTex);
@@ -98,8 +101,9 @@ namespace RenderTaskSolver
         gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     }
 
-    TaskTexture::TaskTexture(Context& gl, std::string Name, uint32_t Width, uint32_t Height, TextureFormat Format) :
-        gl(gl), Name(Name), Width(Width), Height(Height), TF(Format), HasContent(false), SaveFormat(TexFileFormat::Unknown)
+    TaskTexture::TaskTexture(Context& gl, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format) :
+        gl(gl), Name(Name), Width(Width), Height(Height), TF(Format), HasContent(false), SaveFormat(TexFileFormat::Unknown),
+        DontKeep(false)
     {
         gl.GenTextures(1, &glTex);
         BindTexture Binding(gl, gl.TEXTURE_2D, glTex);
@@ -132,7 +136,55 @@ namespace RenderTaskSolver
         gl.DeleteTextures(1, &glTex);
     }
 
-    void TaskTexture::SaveFile()
+    static void ReportThreadFuncFinished(std::string SavePath)
+    {
+        std::stringstream ss;
+        ss << "Threaded saved file `" << SavePath << "`." << std::endl;
+        std::cout << (ss).str();
+    }
+
+    static void SaveBmp32Func(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    {
+        bmp->SaveToBmp32(SavePath);
+        if (Threaded) ReportThreadFuncFinished(SavePath);
+    }
+
+    static void SavePNGFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    {
+        bmp->SaveToPNG(SavePath);
+        if (Threaded) ReportThreadFuncFinished(SavePath);
+    }
+
+    static void SaveJPGFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    {
+        bmp->SaveToJPG(SavePath, 100);
+        if (Threaded) ReportThreadFuncFinished(SavePath);
+    }
+
+    static void SaveTGAFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    {
+        bmp->SaveToTGA(SavePath);
+        if (Threaded) ReportThreadFuncFinished(SavePath);
+    }
+
+    static void SaveHDRFunc(std::unique_ptr<Image_RGBA32F> bmp, std::string SavePath, bool Threaded)
+    {
+        bmp->SaveToHDR(SavePath);
+        if (Threaded) ReportThreadFuncFinished(SavePath);
+    }
+
+    static const std::unordered_map<TexFileFormat, void(*)(std::unique_ptr<Image_RGBA8>, std::string SavePath, bool Threaded)> SaveRGBA8Funcs = {
+        {TexFileFormat::BMP, SaveBmp32Func},
+        {TexFileFormat::PNG, SavePNGFunc},
+        {TexFileFormat::JPG, SaveJPGFunc},
+        {TexFileFormat::TGA, SaveTGAFunc}
+    };
+
+    static const std::unordered_map<TexFileFormat, void(*)(std::unique_ptr<Image_RGBA32F>, std::string SavePath, bool Threaded)> SaveRGBA32FFuncs = {
+        {TexFileFormat::HDR, SaveHDRFunc}
+    };
+
+    ThreadIdType TaskTexture::SaveFileInternal(TaskThreadManager* thrdman)
     {
         BindTexture Binding(gl, gl.TEXTURE_2D, glTex);
 
@@ -146,23 +198,33 @@ namespace RenderTaskSolver
             case TexFileFormat::TGA:
                 if (1)
                 {
-                    Image_RGBA8 bmp(Width, Height);
-                    gl.GetTexImage(gl.TEXTURE_2D, 0, gl.BGRA, gl.UNSIGNED_BYTE, reinterpret_cast<void*>(bmp.GetBitmapDataPtr()));
-                    switch (SaveFormat)
+                    auto bmp = std::make_unique<Image_RGBA8>(Width, Height);
+                    gl.GetTexImage(gl.TEXTURE_2D, 0, gl.BGRA, gl.UNSIGNED_BYTE, reinterpret_cast<void*>(bmp->GetBitmapDataPtr()));
+                    if (!thrdman)
                     {
-                    case TexFileFormat::BMP: bmp.SaveToBmp32(SavePath); break;
-                    case TexFileFormat::PNG: bmp.SaveToPNG(SavePath); break;
-                    case TexFileFormat::JPG: bmp.SaveToJPG(SavePath, 100); break;
-                    case TexFileFormat::TGA: bmp.SaveToTGA(SavePath); break;
+                        SaveRGBA8Funcs.at(SaveFormat)(std::move(bmp), SavePath, false);
+                        return ThreadIdType();
+                    }
+                    else
+                    {
+                        return thrdman->AddThread(std::make_unique<std::jthread>(SaveRGBA8Funcs.at(SaveFormat), std::move(bmp), SavePath, true));
                     }
                 }
                 break;
             case TexFileFormat::HDR:
                 if (1)
                 {
-                    Image_RGBA32F bmp(Width, Height);
-                    gl.GetTexImage(gl.TEXTURE_2D, 0, gl.BGRA, gl.FLOAT, reinterpret_cast<void*>(bmp.GetBitmapDataPtr()));
-                    bmp.SaveToHDR(SavePath);
+                    auto bmp = std::make_unique<Image_RGBA32F>(Width, Height);
+                    gl.GetTexImage(gl.TEXTURE_2D, 0, gl.BGRA, gl.FLOAT, reinterpret_cast<void*>(bmp->GetBitmapDataPtr()));
+                    if (!thrdman)
+                    {
+                        SaveRGBA32FFuncs.at(SaveFormat)(std::move(bmp), SavePath, false);
+                        return ThreadIdType();
+                    }
+                    else
+                    {
+                        return thrdman->AddThread(std::make_unique<std::jthread>(SaveRGBA32FFuncs.at(SaveFormat), std::move(bmp), SavePath, true));
+                    }
                 }
                 break;
             case TexFileFormat::Unknown:
@@ -175,5 +237,15 @@ namespace RenderTaskSolver
         {
             throw SaveTextureError(e.what());
         }
+    }
+
+    void TaskTexture::SaveFile()
+    {
+        SaveFileInternal(nullptr);
+    }
+
+    ThreadIdType TaskTexture::ThreadedSaveFile(TaskThreadManager& thrdman)
+    {
+        return SaveFileInternal(&thrdman);
     }
 }
