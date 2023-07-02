@@ -4,12 +4,12 @@
 
 namespace RenderTaskSolver
 {
-	LoadShaderStorageError::LoadShaderStorageError(std::string what) noexcept:
+	LoadShaderStorageError::LoadShaderStorageError(const std::string& what) noexcept:
 		std::runtime_error(what)
 	{
 	}
 
-	std::vector<uint8_t> LoadShaderStorageFromFile(std::string FilePath)
+	std::vector<uint8_t> LoadShaderStorageFromFile(const std::string& FilePath)
 	{
 		std::ifstream ifs(FilePath, std::ios::binary);
 		if (ifs.fail())
@@ -19,24 +19,30 @@ namespace RenderTaskSolver
 		return std::vector<uint8_t>(std::istreambuf_iterator<char>(ifs), {});
 	}
 
-	TaskShaderStorage::TaskShaderStorage(Context& gl, size_t Size) :
-		ShaderStorageBuffer(gl, nullptr, Size, gl.DYNAMIC_COPY)
+	TaskShaderStorage::TaskShaderStorage(Context& gl, const std::string& Name, size_t Size) :
+		ShaderStorageBuffer(gl, nullptr, Size, gl.DYNAMIC_COPY),
+		Name(Name),
+		DontKeep(false)
 	{
 	}
 
-	TaskShaderStorage::TaskShaderStorage(Context& gl, const void* Data, size_t Size) :
-		ShaderStorageBuffer(gl, Data, Size, gl.DYNAMIC_COPY)
+	TaskShaderStorage::TaskShaderStorage(Context& gl, const std::string& Name, const void* Data, size_t Size) :
+		ShaderStorageBuffer(gl, Data, Size, gl.DYNAMIC_COPY),
+		Name(Name),
+		DontKeep(false)
 	{
 	}
 
-	TaskShaderStorage::TaskShaderStorage(Context& gl, std::string LoadFrom) :
-		ShaderStorageBuffer(gl, LoadShaderStorageFromFile(LoadFrom), gl.DYNAMIC_COPY)
+	TaskShaderStorage::TaskShaderStorage(Context& gl, const std::string& Name, const std::string& LoadFrom) :
+		ShaderStorageBuffer(gl, LoadShaderStorageFromFile(LoadFrom), gl.DYNAMIC_COPY),
+		Name(Name),
+		DontKeep(false)
 	{
 	}
 
-	void TaskShaderStorage::Save(std::string Path)
+	void TaskShaderStorage::Save()
 	{
-		std::ofstream ofs(Path, std::ios::binary);
+		std::ofstream ofs(SavePath, std::ios::binary);
 		auto buf = std::make_unique<uint8_t[]>(Size);
 		GetData(buf.get(), Size, 0);
 		ofs.write(reinterpret_cast<char*>(buf.get()), Size);
