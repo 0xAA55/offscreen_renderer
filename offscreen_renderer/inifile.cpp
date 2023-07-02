@@ -7,7 +7,7 @@
 namespace RenderTaskSolver
 {
 
-    IniFileError::IniFileError(size_t LineNo, std::string what) noexcept :
+    IniFileError::IniFileError(size_t LineNo, const std::string& what) noexcept :
         LineNo(LineNo),
         std::runtime_error(what)
     {
@@ -19,7 +19,7 @@ namespace RenderTaskSolver
         if (sc != std::string::npos) line.erase(line.begin() + sc, line.end());
     }
 
-    IniFile::IniFile(std::string LoadFrom)
+    IniFile::IniFile(const std::string& LoadFrom)
     {
         std::ifstream ifs(LoadFrom);
         if (ifs.fail())
@@ -35,7 +35,7 @@ namespace RenderTaskSolver
         {
             LineNo++;
             RemoveComments(line);
-            trim(line);
+            TrimInPlace(line);
             if (line.length() == 0) continue;
             if (line.front() == '[' && line.back() == ']')
             {
@@ -50,10 +50,8 @@ namespace RenderTaskSolver
                 {
                     throw IniFileError(LineNo, std::string("Unknown line ") + line);
                 }
-                key = line.substr(0, ass);
-                value = line.substr(ass + 1, std::string::npos);
-                trim(key);
-                trim(value);
+                key = Trim(line.substr(0, ass));
+                value = Trim(line.substr(ass + 1, std::string::npos));
                 auto& sect = *lastSect;
                 sect[key] = value;
             }
