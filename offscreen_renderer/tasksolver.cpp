@@ -223,11 +223,7 @@ namespace RenderTaskSolver
         }
         if (!t)
         {
-            // auto& td = Config.sections[tn];
-            // if (!Trim(td["load"]).size() && !Trim(td["size"]).size())
-            {
-                throw InvalidTaskConfig((std::stringstream() << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.").str());
-            }
+            throw InvalidTaskConfig((std::stringstream() << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.").str());
         }
         t->UniformName = uniform;
         t->DontKeep = GetConfigValueBoolean(tn, "dontkeep", false);
