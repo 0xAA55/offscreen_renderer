@@ -2,34 +2,39 @@
 #include "tasksolver.hpp"
 #include "strutil.hpp"
 
+#include <iostream>
+
 namespace RenderTaskSolver
 {
-    FBOException::FBOException(std::string what) noexcept :
+    FBOException::FBOException(const std::string& what) noexcept :
         std::runtime_error(what)
     {
     }
 
-    std::vector<std::string> FilterStringWithLength(const std::vector<std::string>& input)
+    std::set<std::string> FilterStringWithLength(const std::set<std::string>& input)
     {
-        std::vector<std::string> ret;
+        std::set<std::string> ret;
         for (auto i : input)
         {
-            trim(i);
-            if (i.size()) ret.push_back(i);
+            TrimInPlace(i);
+            if (i.size()) ret.insert(i);
         }
         return ret;
     }
 
-    RenderTask::RenderTask(TaskSolver& Solver, std::shared_ptr<TaskShader> Shader, std::vector<std::string> Inputs, std::vector<std::string> Outputs, std::vector<std::string> ShaderStorages) :
+    RenderTask::RenderTask(TaskSolver& Solver, const std::string& Name, std::shared_ptr<TaskShader> Shader, std::set<std::string> Inputs, std::set<std::string> Outputs, std::set<std::string> ShaderStorages) :
         gl(Solver.gl),
+        Name(Name),
         Solver(Solver),
         Shader(Shader),
         Inputs(FilterStringWithLength(Inputs)), Outputs(FilterStringWithLength(Outputs)), ShaderStorages(FilterStringWithLength(ShaderStorages))
     {
+        InputsAndOutputs = Inputs;
+        InputsAndOutputs.merge(Outputs);
     }
 
-    RenderTaskDraw::RenderTaskDraw(TaskSolver& Solver, std::shared_ptr<TaskShader> Shader, std::vector<std::string> Inputs, std::vector<std::string> Outputs, std::vector<std::string> ShaderStorages) :
-        RenderTask(Solver, Shader, Inputs, Outputs, ShaderStorages),
+    RenderTaskDraw::RenderTaskDraw(TaskSolver& Solver, const std::string& Name, std::shared_ptr<TaskShader> Shader, std::set<std::string> Inputs, std::set<std::string> Outputs, std::set<std::string> ShaderStorages) :
+        RenderTask(Solver, Name, Shader, Inputs, Outputs, ShaderStorages),
         FBO(0), OutWidth(0), OutHeight(0)
     {
         GLuint Program = *Shader;
@@ -60,37 +65,44 @@ namespace RenderTaskSolver
         return v1 < v2 ? v2 : v1;
     }
 
-    void RenderTaskDraw::InitFBO()
+    void RenderTaskDraw::EnsureFBO()
     {
         if (FBO) return;
 
         gl.GenFramebuffers(1, &FBO);
         gl.BindFramebuffer(gl.FRAMEBUFFER, FBO);
 
-        GLenum attachment = gl.COLOR_ATTACHMENT0;
+        GLenum attachment = 0;
         for (auto& o : Outputs)
         {
             auto& t = Solver.TextureMap[o];
             OutWidth = max(OutWidth, t->GetWidth());
             OutHeight = max(OutHeight, t->GetHeight());
-            gl.FramebufferTexture2D(gl.FRAMEBUFFER, attachment, gl.TEXTURE_2D, *t, 0);
+            gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + attachment, gl.TEXTURE_2D, *t, 0);
+
+            if (Solver.Verbose)
+            {
+                std::cout << "Binding `" << t->GetName() << "` to framebuffer attachment" << attachment << "." << std::endl;
+            }
+
             attachment++;
         }
 
         gl.BindFramebuffer(gl.FRAMEBUFFER, 0);
     }
 
-    void RenderTaskDraw::OnLoadingFinished()
-    {
-        InitFBO();
-    }
-
     void RenderTaskDraw::Process()
     {
         GLuint Program = *Shader;
 
+        EnsureFBO();
         gl.BindFramebuffer(gl.FRAMEBUFFER, FBO);
         gl.Viewport(0, 0, OutWidth, OutHeight);
+
+        if (Solver.Verbose)
+        {
+            std::cout << "Viewport size is " << OutWidth << "x" << OutHeight << "." << std::endl;
+        }
 
         gl.UseProgram(Program);
         gl.BindVertexArray(Pipe);
@@ -101,11 +113,17 @@ namespace RenderTaskSolver
 
         for (auto& i : Inputs)
         {
-            if (!i.size()) continue;
-            location = gl.GetUniformLocation(Program, i.c_str());
-            if (location == -1) continue;
-
             auto& texture = *Solver.TextureMap[i];
+            location = gl.GetUniformLocation(Program, texture.UniformName.c_str());
+            if (location == -1)
+            {
+                if (Solver.Verbose)
+                {
+                    std::cout << "Warning: could not find location of uniform `" << texture.UniformName << "` of shader `" << Shader->GetShaderName() << "`" << std::endl;
+                }
+                continue;
+            }
+
             gl.ActiveTexture(gl.TEXTURE0 + TexUnit);
             gl.BindTexture(gl.TEXTURE_2D, texture);
             gl.Uniform1i(location, TexUnit);
@@ -129,13 +147,9 @@ namespace RenderTaskSolver
         gl.BindFramebuffer(gl.FRAMEBUFFER, 0);
     }
 
-    RenderTaskCompute::RenderTaskCompute(TaskSolver& Solver, std::shared_ptr<TaskShader> Shader, std::vector<std::string> Inputs, std::vector<std::string> Outputs, std::vector<std::string> ShaderStorages, uint32_t numGroupX, uint32_t numGroupY, uint32_t numGroupZ) :
-        RenderTask(Solver, Shader, Inputs, Outputs, ShaderStorages),
+    RenderTaskCompute::RenderTaskCompute(TaskSolver& Solver, const std::string& Name, std::shared_ptr<TaskShader> Shader, std::set<std::string> Inputs, std::set<std::string> Outputs, std::set<std::string> ShaderStorages, uint32_t numGroupX, uint32_t numGroupY, uint32_t numGroupZ) :
+        RenderTask(Solver, Name, Shader, Inputs, Outputs, ShaderStorages),
         numGroupX(numGroupX), numGroupY(numGroupY), numGroupZ(numGroupZ)
-    {
-    }
-
-    void RenderTaskCompute::OnLoadingFinished()
     {
     }
 
@@ -157,6 +171,10 @@ namespace RenderTaskSolver
         {
             auto& texture = *Solver.TextureMap[in];
 
+            if (Solver.Verbose)
+            {
+                std::cout << "Binding image `" << texture.UniformName << "` to " << index << "." << std::endl;
+            }
             gl.BindImageTexture(index, texture, 0, gl.FALSE, 0, gl.READ_ONLY, TexFormatToComputeFormat.at(texture.GetFormat()));
             index++;
         }
@@ -165,6 +183,10 @@ namespace RenderTaskSolver
         {
             auto& texture = *Solver.TextureMap[out];
 
+            if (Solver.Verbose)
+            {
+                std::cout << "Binding image `" << texture.UniformName << "` to " << index << "." << std::endl;
+            }
             gl.BindImageTexture(index, texture, 0, gl.FALSE, 0, gl.READ_WRITE, TexFormatToComputeFormat.at(texture.GetFormat()));
             index++;
         }
@@ -174,6 +196,10 @@ namespace RenderTaskSolver
         {
             auto& storage = *Solver.ShaderStorageMap[ss];
 
+            if (Solver.Verbose)
+            {
+                std::cout << "Binding shader storage `" << storage.GetName() << "` to " << index << "." << std::endl;
+            }
             gl.BindBufferBase(gl.SHADER_STORAGE_BUFFER, index, storage);
             index++;
         }
