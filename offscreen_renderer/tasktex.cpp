@@ -1,5 +1,6 @@
 #include "tasktex.hpp"
 #include "unibmp.hpp"
+#include "tasksolver.hpp"
 #include <sstream>
 #include <iostream>
 
@@ -36,8 +37,9 @@ namespace RenderTaskSolver
         }
     };
 
-    TaskTexture::TaskTexture(Context& gl, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format) :
-        gl(gl), Name(Name), TF(TextureFormat::Unknown), SaveFormat(Format),
+    TaskTexture::TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format) :
+        Solver(Solver), gl(Solver.gl),
+        Name(Name), TF(TextureFormat::Unknown), SaveFormat(Format),
         Width(0), Height(0), HasContent(false),
         DontKeep(false)
     {
@@ -101,8 +103,9 @@ namespace RenderTaskSolver
         gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     }
 
-    TaskTexture::TaskTexture(Context& gl, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format) :
-        gl(gl), Name(Name), Width(Width), Height(Height), TF(Format), HasContent(false), SaveFormat(TexFileFormat::Unknown),
+    TaskTexture::TaskTexture(TaskSolver& Solver, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format) :
+        Solver(Solver), gl(Solver.gl),
+        Name(Name), Width(Width), Height(Height), TF(Format), HasContent(false), SaveFormat(TexFileFormat::Unknown),
         DontKeep(false)
     {
         gl.GenTextures(1, &glTex);
@@ -143,34 +146,34 @@ namespace RenderTaskSolver
         std::cout << (ss).str();
     }
 
-    static void SaveBmp32Func(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    static void SaveBmp32Func(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool ReportThreadedFinished)
     {
         bmp->SaveToBmp32(SavePath);
-        if (Threaded) ReportThreadFuncFinished(SavePath);
+        if (ReportThreadedFinished) ReportThreadFuncFinished(SavePath);
     }
 
-    static void SavePNGFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    static void SavePNGFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool ReportThreadedFinished)
     {
         bmp->SaveToPNG(SavePath);
-        if (Threaded) ReportThreadFuncFinished(SavePath);
+        if (ReportThreadedFinished) ReportThreadFuncFinished(SavePath);
     }
 
-    static void SaveJPGFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    static void SaveJPGFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool ReportThreadedFinished)
     {
         bmp->SaveToJPG(SavePath, 100);
-        if (Threaded) ReportThreadFuncFinished(SavePath);
+        if (ReportThreadedFinished) ReportThreadFuncFinished(SavePath);
     }
 
-    static void SaveTGAFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool Threaded)
+    static void SaveTGAFunc(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool ReportThreadedFinished)
     {
         bmp->SaveToTGA(SavePath);
-        if (Threaded) ReportThreadFuncFinished(SavePath);
+        if (ReportThreadedFinished) ReportThreadFuncFinished(SavePath);
     }
 
-    static void SaveHDRFunc(std::unique_ptr<Image_RGBA32F> bmp, std::string SavePath, bool Threaded)
+    static void SaveHDRFunc(std::unique_ptr<Image_RGBA32F> bmp, std::string SavePath, bool ReportThreadedFinished)
     {
         bmp->SaveToHDR(SavePath);
-        if (Threaded) ReportThreadFuncFinished(SavePath);
+        if (ReportThreadedFinished) ReportThreadFuncFinished(SavePath);
     }
 
     static const std::unordered_map<TexFileFormat, void(*)(std::unique_ptr<Image_RGBA8>, std::string SavePath, bool Threaded)> SaveRGBA8Funcs = {
@@ -207,7 +210,7 @@ namespace RenderTaskSolver
                     }
                     else
                     {
-                        return thrdman->AddThread(std::make_unique<std::jthread>(SaveRGBA8Funcs.at(SaveFormat), std::move(bmp), SavePath, true));
+                        return thrdman->AddThread(std::make_unique<std::jthread>(SaveRGBA8Funcs.at(SaveFormat), std::move(bmp), SavePath, true && Solver.Verbose));
                     }
                 }
                 break;
@@ -223,7 +226,7 @@ namespace RenderTaskSolver
                     }
                     else
                     {
-                        return thrdman->AddThread(std::make_unique<std::jthread>(SaveRGBA32FFuncs.at(SaveFormat), std::move(bmp), SavePath, true));
+                        return thrdman->AddThread(std::make_unique<std::jthread>(SaveRGBA32FFuncs.at(SaveFormat), std::move(bmp), SavePath, true && Solver.Verbose));
                     }
                 }
                 break;

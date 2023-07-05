@@ -4,7 +4,6 @@
 #include <set>
 #include <sstream>
 #include <iostream>
-#include <filesystem>
 
 namespace RenderTaskSolver
 {
@@ -147,22 +146,28 @@ namespace RenderTaskSolver
 
     std::shared_ptr<TaskShader> TaskSolver::LoadDrawCommandShader(const std::string& LoadPath)
     {
+        auto lpath = std::filesystem::path(LoadPath);
+        if (lpath.is_relative()) lpath = WorkDir / lpath;
+        
         if (Verbose)
         {
-            std::cout << "Creating draw command shader from `" << std::filesystem::absolute(LoadPath).string() << "`." << std::endl;
+            std::cout << "Creating draw command shader from `" << std::filesystem::absolute(lpath).string() << "`." << std::endl;
         }
 
-        return static_cast<std::shared_ptr<TaskShader>> (std::make_shared<TaskShaderDraw>(gl, std::filesystem::path(LoadPath).filename().string(), LoadPath, true));
+        return static_cast<std::shared_ptr<TaskShader>> (std::make_shared<TaskShaderDraw>(gl, LoadPath, lpath.string(), true));
     }
 
     std::shared_ptr<TaskShader> TaskSolver::LoadComputeShader(const std::string& LoadPath)
     {
+        auto lpath = std::filesystem::path(LoadPath);
+        if (lpath.is_relative()) lpath = WorkDir / lpath;
+
         if (Verbose)
         {
-            std::cout << "Creating compute shader from `" << std::filesystem::absolute(LoadPath).string() << "`." << std::endl;
+            std::cout << "Creating compute shader from `" << std::filesystem::absolute(lpath).string() << "`." << std::endl;
         }
 
-        return static_cast<std::shared_ptr<TaskShader>> (std::make_shared<TaskShaderCompute>(gl, std::filesystem::path(LoadPath).filename().string(), LoadPath, true));
+        return static_cast<std::shared_ptr<TaskShader>> (std::make_shared<TaskShaderCompute>(gl, LoadPath, lpath.string(), true));
     }
 
     void TaskSolver::CreateTexture(const std::string& tn)
@@ -175,12 +180,16 @@ namespace RenderTaskSolver
         std::shared_ptr<TaskTexture> t;
         if (lpath.size())
         {
+            auto lp = std::filesystem::path(lpath);
+            if (lp.is_relative()) lp = WorkDir / lp;
+            lpath = lp.string();
+
             if (Verbose)
             {
                 std::cout << "Loading texture for `" << tn << "` from `" << std::filesystem::absolute(lpath).string() << "`" << std::endl;
             }
 
-            t = std::make_shared<TaskTexture>(gl, tn, lpath, GetFormatByExt(lpath));
+            t = std::make_shared<TaskTexture>(*this, tn, lpath, GetFormatByExt(lpath));
 
             Config.sections[tn]["size"] = (std::stringstream() << t->GetWidth() << "," << t->GetHeight()).str();
         }
@@ -218,7 +227,7 @@ namespace RenderTaskSolver
                 {
                     std::cout << "Creating texture for `" << tn << "` by size " << w << "x" << h << "." << std::endl;
                 }
-                t = std::make_shared<TaskTexture>(gl, tn, w, h, GetTexFormatByStr(GetConfigValue(tn, "format")));
+                t = std::make_shared<TaskTexture>(*this, tn, w, h, GetTexFormatByStr(GetConfigValue(tn, "format")));
             }
         }
         if (!t)
@@ -269,6 +278,10 @@ namespace RenderTaskSolver
         std::shared_ptr<TaskShaderStorage> s;
         if (lpath.size())
         {
+            auto lp = std::filesystem::path(lpath);
+            if (lp.is_relative()) lp = WorkDir / lp;
+            lpath = lp.string();
+
             if (Verbose)
             {
                 std::cout << "Loading shader storage for `" << ssn << "` from `" << std::filesystem::absolute(lpath).string() << "`" << std::endl;
@@ -367,10 +380,11 @@ namespace RenderTaskSolver
         }
     }
 
-    TaskSolver::TaskSolver(Context& gl, const IniFile& TaskConf, const std::set<std::string>& Options) :
+    TaskSolver::TaskSolver(Context& gl, const IniFile& TaskConf, const std::filesystem::path& ConfigDir, const std::set<std::string>& Options) :
         gl(gl),
         Options(Options),
         Config(TaskConf),
+        WorkDir(ConfigDir),
         BBVB(gl, std::vector<float>
             {
                 -1, -1,
@@ -522,7 +536,7 @@ namespace RenderTaskSolver
     }
 
     TaskSolver::TaskSolver(Context& gl, const std::string& ConfFile, const std::set<std::string>& Options) :
-        TaskSolver(gl, IniFile(ConfFile), Options)
+        TaskSolver(gl, IniFile(ConfFile), std::filesystem::path(ConfFile).remove_filename(), Options)
     {
     }
 

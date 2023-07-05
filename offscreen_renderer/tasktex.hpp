@@ -47,9 +47,12 @@ namespace RenderTaskSolver
         SaveTextureError(const std::string& what) noexcept;
     };
 
+    class TaskSolver;
+
     class TaskTexture
     {
     protected:
+        TaskSolver& Solver;
         Context& gl;
         std::string Name;
         GLuint glTex;
@@ -72,8 +75,8 @@ namespace RenderTaskSolver
         bool DontKeep;
         bool HasContent;
 
-        TaskTexture(Context& gl, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format);
-        TaskTexture(Context& gl, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format);
+        TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format);
+        TaskTexture(TaskSolver& Solver, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format);
         ~TaskTexture();
 
         void SaveFile();
