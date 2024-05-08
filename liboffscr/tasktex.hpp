@@ -70,13 +70,14 @@ namespace RenderTaskSolver
         inline operator GLuint() const { return glTex; }
 
         std::string UniformName;
+        std::string ShaderOutputName;
         std::string SavePath;
         TexFileFormat SaveFormat;
         bool DontKeep;
         bool HasContent;
 
-        TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format);
-        TaskTexture(TaskSolver& Solver, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format);
+        TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& ShaderOutputName, const std::string& LoadFrom, TexFileFormat Format);
+        TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& ShaderOutputName, uint32_t Width, uint32_t Height, TextureFormat Format);
         ~TaskTexture();
 
         void SaveFile();

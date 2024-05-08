@@ -37,9 +37,10 @@ namespace RenderTaskSolver
         }
     };
 
-    TaskTexture::TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& LoadFrom, TexFileFormat Format) :
+    TaskTexture::TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& ShaderOutputName, const std::string& LoadFrom, TexFileFormat Format) :
         Solver(Solver), gl(Solver.gl),
-        Name(Name), TF(TextureFormat::Unknown), SaveFormat(Format),
+        Name(Name), ShaderOutputName(ShaderOutputName),
+        TF(TextureFormat::Unknown), SaveFormat(Format),
         Width(0), Height(0), HasContent(false),
         DontKeep(false)
     {
@@ -103,9 +104,11 @@ namespace RenderTaskSolver
         gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     }
 
-    TaskTexture::TaskTexture(TaskSolver& Solver, const std::string& Name, uint32_t Width, uint32_t Height, TextureFormat Format) :
+    TaskTexture::TaskTexture(TaskSolver& Solver, const std::string& Name, const std::string& ShaderOutputName, uint32_t Width, uint32_t Height, TextureFormat Format) :
         Solver(Solver), gl(Solver.gl),
-        Name(Name), Width(Width), Height(Height), TF(Format), HasContent(false), SaveFormat(TexFileFormat::Unknown),
+        Name(Name), ShaderOutputName(ShaderOutputName),
+        Width(Width), Height(Height),
+        TF(Format), HasContent(false), SaveFormat(TexFileFormat::Unknown),
         DontKeep(false)
     {
         gl.GenTextures(1, &glTex);

@@ -206,6 +206,7 @@ namespace RenderTaskSolver
         auto lpath = GetConfigValue(tn, "load");
         auto size_str = GetConfigValue(tn, "size");
         auto uniform = GetConfigValue(tn, "uniform");
+        auto shader_output_name = GetConfigValue(tn, "shader_output_name");
         if (!uniform.size()) uniform = tn;
         std::shared_ptr<TaskTexture> t;
         std::stringstream ss;
@@ -220,7 +221,7 @@ namespace RenderTaskSolver
                 std::cout << "Loading texture for `" << tn << "` from `" << std::filesystem::absolute(lpath).string() << "`" << std::endl;
             }
 
-            t = std::make_shared<TaskTexture>(*this, tn, lpath, GetFormatByExt(lpath));
+            t = std::make_shared<TaskTexture>(*this, tn, shader_output_name, lpath, GetFormatByExt(lpath));
 
             ss << t->GetWidth() << "," << t->GetHeight();
             Config.sections[tn]["size"] = ss.str();
@@ -263,7 +264,7 @@ namespace RenderTaskSolver
                 {
                     std::cout << "Creating texture for `" << tn << "` by size " << w << "x" << h << "." << std::endl;
                 }
-                t = std::make_shared<TaskTexture>(*this, tn, w, h, GetTexFormatByStr(GetConfigValue(tn, "format")));
+                t = std::make_shared<TaskTexture>(*this, tn, shader_output_name, w, h, GetTexFormatByStr(GetConfigValue(tn, "format")));
             }
         }
         if (!t)
