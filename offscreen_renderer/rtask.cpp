@@ -84,6 +84,7 @@ namespace RenderTaskSolver
         gl.BindVertexArray(Pipe);
 
         GLenum TexUnit = 0;
+        GLuint ssbo_binding = 0;
         GLint location = -1;
 
         for (auto& i : Inputs)
@@ -101,6 +102,15 @@ namespace RenderTaskSolver
 
         location = gl.GetUniformLocation(Program, "Resolution");
         if (location != -1) gl.Uniform2f(location, static_cast<GLfloat>(OutWidth), static_cast<GLfloat>(OutHeight));
+
+        ssbo_binding = 0;
+        for (auto& ss : ShaderStorages)
+        {
+            auto& storage = *Solver.ShaderStorageMap[ss];
+
+            gl.BindBufferBase(gl.SHADER_STORAGE_BUFFER, ssbo_binding, storage);
+            ssbo_binding++;
+        }
 
         BufferBind<gl.ELEMENT_ARRAY_BUFFER> b(gl, Solver.BBEB);
         gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, nullptr);
