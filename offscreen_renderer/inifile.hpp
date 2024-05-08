@@ -11,7 +11,7 @@ namespace RenderTaskSolver
     protected:
         size_t LineNo;
     public:
-        IniFileError(size_t LineNo, std::string what) noexcept;
+        IniFileError(size_t LineNo, const std::string& what) noexcept;
     };
 
     class IniFile
@@ -20,8 +20,11 @@ namespace RenderTaskSolver
         static void RemoveComments(std::string& line);
 
     public:
-        std::map<std::string, std::map<std::string, std::string>> sections;
+        using SectionType = std::map<std::string, std::string>;
+        using IniFileType = std::map<std::string, SectionType>;
 
-        IniFile(std::string LoadFrom);
+        IniFileType sections;
+
+        IniFile(const std::string& LoadFrom);
     };
 }
