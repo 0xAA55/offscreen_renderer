@@ -11,7 +11,7 @@ namespace RenderTaskSolver
         return err;
     }
 
-    glfwCreateWindowFailure::glfwCreateWindowFailure(std::string what) noexcept :
+    glfwCreateWindowFailure::glfwCreateWindowFailure(const std::string& what) noexcept :
         std::runtime_error(what)
     {
     }

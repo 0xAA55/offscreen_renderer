@@ -12,7 +12,7 @@ namespace RenderTaskSolver
     class glfwCreateWindowFailure : public std::runtime_error
     {
     public:
-        glfwCreateWindowFailure(std::string what) noexcept;
+        glfwCreateWindowFailure(const std::string& what) noexcept;
     };
 
     class HiddenGLFWWindow
