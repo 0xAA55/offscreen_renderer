@@ -6,7 +6,7 @@
 #include <tuple>
 #include <type_traits>
 
-namespace RenderTaskSolver
+namespace StringUtil
 {
 	void LTrimInPlace(std::string& s);
 	void RTrimInPlace(std::string& s);
@@ -40,8 +40,8 @@ namespace RenderTaskSolver
 		ParseError(const std::string& what) noexcept;
 	};
 
-    std::vector<std::string> ParseFields(const std::string& Fields, const std::string& Delim = ",", const bool AllowBlank = false, const size_t ExpectedNumFields = 0);
-    std::vector<std::string> ParseFields(const std::string& Fields, const char Delim = ',', const bool AllowBlank = false, const size_t ExpectedNumFields = 0);
+	std::vector<std::string> ParseFields(const std::string& Fields, const std::string& Delim = ",", const bool AllowBlank = false, const size_t ExpectedNumFields = 0);
+	std::vector<std::string> ParseFields(const std::string& Fields, const char Delim = ',', const bool AllowBlank = false, const size_t ExpectedNumFields = 0);
 
 	std::set<std::string> ParseUniqueFields(const std::string& Fields, const std::string& Delim = ",", const bool AllowBlank = false, const size_t ExpectedNumFields = 0);
 	std::set<std::string> ParseUniqueFields(const std::string& Fields, const char Delim = ',', const bool AllowBlank = false, const size_t ExpectedNumFields = 0);
