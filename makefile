@@ -13,7 +13,7 @@ gpurenderer: offscr/main.o liboffscr/liboffscr.a unibmp/libunibmp.a
 liboffscr/liboffscr.a:
 	$(MAKE) -C liboffscr
 
-unibmp/unibmp.a:
+unibmp/libunibmp.a:
 	$(MAKE) -C unibmp
 
 clean:
