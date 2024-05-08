@@ -70,56 +70,105 @@ namespace GL
 	GLAPI GLboolean APIENTRY glIsEnabled (GLenum cap);
 	GLAPI void APIENTRY glDepthRange (GLdouble n, GLdouble f);
 	GLAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height);
-	const Version10::PFNGLCULLFACEPROC Version10::CullFace = glCullFace;
-	const Version10::PFNGLFRONTFACEPROC Version10::FrontFace = glFrontFace;
-	const Version10::PFNGLHINTPROC Version10::Hint = glHint;
-	const Version10::PFNGLLINEWIDTHPROC Version10::LineWidth = glLineWidth;
-	const Version10::PFNGLPOINTSIZEPROC Version10::PointSize = glPointSize;
-	const Version10::PFNGLPOLYGONMODEPROC Version10::PolygonMode = glPolygonMode;
-	const Version10::PFNGLSCISSORPROC Version10::Scissor = glScissor;
-	const Version10::PFNGLTEXPARAMETERFPROC Version10::TexParameterf = glTexParameterf;
-	const Version10::PFNGLTEXPARAMETERFVPROC Version10::TexParameterfv = glTexParameterfv;
-	const Version10::PFNGLTEXPARAMETERIPROC Version10::TexParameteri = glTexParameteri;
-	const Version10::PFNGLTEXPARAMETERIVPROC Version10::TexParameteriv = glTexParameteriv;
-	const Version10::PFNGLTEXIMAGE1DPROC Version10::TexImage1D = glTexImage1D;
-	const Version10::PFNGLTEXIMAGE2DPROC Version10::TexImage2D = glTexImage2D;
-	const Version10::PFNGLDRAWBUFFERPROC Version10::DrawBuffer = glDrawBuffer;
-	const Version10::PFNGLCLEARPROC Version10::Clear = glClear;
-	const Version10::PFNGLCLEARCOLORPROC Version10::ClearColor = glClearColor;
-	const Version10::PFNGLCLEARSTENCILPROC Version10::ClearStencil = glClearStencil;
-	const Version10::PFNGLCLEARDEPTHPROC Version10::ClearDepth = glClearDepth;
-	const Version10::PFNGLSTENCILMASKPROC Version10::StencilMask = glStencilMask;
-	const Version10::PFNGLCOLORMASKPROC Version10::ColorMask = glColorMask;
-	const Version10::PFNGLDEPTHMASKPROC Version10::DepthMask = glDepthMask;
-	const Version10::PFNGLDISABLEPROC Version10::Disable = glDisable;
-	const Version10::PFNGLENABLEPROC Version10::Enable = glEnable;
-	const Version10::PFNGLFINISHPROC Version10::Finish = glFinish;
-	const Version10::PFNGLFLUSHPROC Version10::Flush = glFlush;
-	const Version10::PFNGLBLENDFUNCPROC Version10::BlendFunc = glBlendFunc;
-	const Version10::PFNGLLOGICOPPROC Version10::LogicOp = glLogicOp;
-	const Version10::PFNGLSTENCILFUNCPROC Version10::StencilFunc = glStencilFunc;
-	const Version10::PFNGLSTENCILOPPROC Version10::StencilOp = glStencilOp;
-	const Version10::PFNGLDEPTHFUNCPROC Version10::DepthFunc = glDepthFunc;
-	const Version10::PFNGLPIXELSTOREFPROC Version10::PixelStoref = glPixelStoref;
-	const Version10::PFNGLPIXELSTOREIPROC Version10::PixelStorei = glPixelStorei;
-	const Version10::PFNGLREADBUFFERPROC Version10::ReadBuffer = glReadBuffer;
-	const Version10::PFNGLREADPIXELSPROC Version10::ReadPixels = glReadPixels;
-	const Version10::PFNGLGETBOOLEANVPROC Version10::GetBooleanv = glGetBooleanv;
-	const Version10::PFNGLGETDOUBLEVPROC Version10::GetDoublev = glGetDoublev;
-	const Version10::PFNGLGETERRORPROC Version10::GetError = glGetError;
-	const Version10::PFNGLGETFLOATVPROC Version10::GetFloatv = glGetFloatv;
-	const Version10::PFNGLGETINTEGERVPROC Version10::GetIntegerv = glGetIntegerv;
-	const Version10::PFNGLGETSTRINGPROC Version10::GetString = glGetString;
-	const Version10::PFNGLGETTEXIMAGEPROC Version10::GetTexImage = glGetTexImage;
-	const Version10::PFNGLGETTEXPARAMETERFVPROC Version10::GetTexParameterfv = glGetTexParameterfv;
-	const Version10::PFNGLGETTEXPARAMETERIVPROC Version10::GetTexParameteriv = glGetTexParameteriv;
-	const Version10::PFNGLGETTEXLEVELPARAMETERFVPROC Version10::GetTexLevelParameterfv = glGetTexLevelParameterfv;
-	const Version10::PFNGLGETTEXLEVELPARAMETERIVPROC Version10::GetTexLevelParameteriv = glGetTexLevelParameteriv;
-	const Version10::PFNGLISENABLEDPROC Version10::IsEnabled = glIsEnabled;
-	const Version10::PFNGLDEPTHRANGEPROC Version10::DepthRange = glDepthRange;
-	const Version10::PFNGLVIEWPORTPROC Version10::Viewport = glViewport;
+
+	static void APIENTRY Null_glCullFace (GLenum mode){ NullFuncPtr(); }
+	static void APIENTRY Null_glFrontFace (GLenum mode){ NullFuncPtr(); }
+	static void APIENTRY Null_glHint (GLenum target, GLenum mode){ NullFuncPtr(); }
+	static void APIENTRY Null_glLineWidth (GLfloat width){ NullFuncPtr(); }
+	static void APIENTRY Null_glPointSize (GLfloat size){ NullFuncPtr(); }
+	static void APIENTRY Null_glPolygonMode (GLenum face, GLenum mode){ NullFuncPtr(); }
+	static void APIENTRY Null_glScissor (GLint x, GLint y, GLsizei width, GLsizei height){ NullFuncPtr(); }
+	static void APIENTRY Null_glTexParameterf (GLenum target, GLenum pname, GLfloat param){ NullFuncPtr(); }
+	static void APIENTRY Null_glTexParameterfv (GLenum target, GLenum pname, const GLfloat* params){ NullFuncPtr(); }
+	static void APIENTRY Null_glTexParameteri (GLenum target, GLenum pname, GLint param){ NullFuncPtr(); }
+	static void APIENTRY Null_glTexParameteriv (GLenum target, GLenum pname, const GLint* params){ NullFuncPtr(); }
+	static void APIENTRY Null_glTexImage1D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const void* pixels){ NullFuncPtr(); }
+	static void APIENTRY Null_glTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const void* pixels){ NullFuncPtr(); }
+	static void APIENTRY Null_glDrawBuffer (GLenum buf){ NullFuncPtr(); }
+	static void APIENTRY Null_glClear (GLbitfield mask){ NullFuncPtr(); }
+	static void APIENTRY Null_glClearColor (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha){ NullFuncPtr(); }
+	static void APIENTRY Null_glClearStencil (GLint s){ NullFuncPtr(); }
+	static void APIENTRY Null_glClearDepth (GLdouble depth){ NullFuncPtr(); }
+	static void APIENTRY Null_glStencilMask (GLuint mask){ NullFuncPtr(); }
+	static void APIENTRY Null_glColorMask (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha){ NullFuncPtr(); }
+	static void APIENTRY Null_glDepthMask (GLboolean flag){ NullFuncPtr(); }
+	static void APIENTRY Null_glDisable (GLenum cap){ NullFuncPtr(); }
+	static void APIENTRY Null_glEnable (GLenum cap){ NullFuncPtr(); }
+	static void APIENTRY Null_glFinish (void){ NullFuncPtr(); }
+	static void APIENTRY Null_glFlush (void){ NullFuncPtr(); }
+	static void APIENTRY Null_glBlendFunc (GLenum sfactor, GLenum dfactor){ NullFuncPtr(); }
+	static void APIENTRY Null_glLogicOp (GLenum opcode){ NullFuncPtr(); }
+	static void APIENTRY Null_glStencilFunc (GLenum func, GLint ref, GLuint mask){ NullFuncPtr(); }
+	static void APIENTRY Null_glStencilOp (GLenum fail, GLenum zfail, GLenum zpass){ NullFuncPtr(); }
+	static void APIENTRY Null_glDepthFunc (GLenum func){ NullFuncPtr(); }
+	static void APIENTRY Null_glPixelStoref (GLenum pname, GLfloat param){ NullFuncPtr(); }
+	static void APIENTRY Null_glPixelStorei (GLenum pname, GLint param){ NullFuncPtr(); }
+	static void APIENTRY Null_glReadBuffer (GLenum src){ NullFuncPtr(); }
+	static void APIENTRY Null_glReadPixels (GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* pixels){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetBooleanv (GLenum pname, GLboolean* data){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetDoublev (GLenum pname, GLdouble* data){ NullFuncPtr(); }
+	static GLenum APIENTRY Null_glGetError (void){ NullFuncPtr(); return 0; }
+	static void APIENTRY Null_glGetFloatv (GLenum pname, GLfloat* data){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetIntegerv (GLenum pname, GLint* data){ NullFuncPtr(); }
+	static const GLubyte* APIENTRY Null_glGetString (GLenum name){ NullFuncPtr(); return 0; }
+	static void APIENTRY Null_glGetTexImage (GLenum target, GLint level, GLenum format, GLenum type, void* pixels){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetTexParameterfv (GLenum target, GLenum pname, GLfloat* params){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetTexParameteriv (GLenum target, GLenum pname, GLint* params){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetTexLevelParameterfv (GLenum target, GLint level, GLenum pname, GLfloat* params){ NullFuncPtr(); }
+	static void APIENTRY Null_glGetTexLevelParameteriv (GLenum target, GLint level, GLenum pname, GLint* params){ NullFuncPtr(); }
+	static GLboolean APIENTRY Null_glIsEnabled (GLenum cap){ NullFuncPtr(); return 0; }
+	static void APIENTRY Null_glDepthRange (GLdouble n, GLdouble f){ NullFuncPtr(); }
+	static void APIENTRY Null_glViewport (GLint x, GLint y, GLsizei width, GLsizei height){ NullFuncPtr(); }
 	Version10::Version10(Func_GetProcAddress GetProcAddress):
 		GetProcAddress(GetProcAddress),
+		CullFace(GetProc<PFNGLCULLFACEPROC>("glCullFace", Null_glCullFace)),
+		FrontFace(GetProc<PFNGLFRONTFACEPROC>("glFrontFace", Null_glFrontFace)),
+		Hint(GetProc<PFNGLHINTPROC>("glHint", Null_glHint)),
+		LineWidth(GetProc<PFNGLLINEWIDTHPROC>("glLineWidth", Null_glLineWidth)),
+		PointSize(GetProc<PFNGLPOINTSIZEPROC>("glPointSize", Null_glPointSize)),
+		PolygonMode(GetProc<PFNGLPOLYGONMODEPROC>("glPolygonMode", Null_glPolygonMode)),
+		Scissor(GetProc<PFNGLSCISSORPROC>("glScissor", Null_glScissor)),
+		TexParameterf(GetProc<PFNGLTEXPARAMETERFPROC>("glTexParameterf", Null_glTexParameterf)),
+		TexParameterfv(GetProc<PFNGLTEXPARAMETERFVPROC>("glTexParameterfv", Null_glTexParameterfv)),
+		TexParameteri(GetProc<PFNGLTEXPARAMETERIPROC>("glTexParameteri", Null_glTexParameteri)),
+		TexParameteriv(GetProc<PFNGLTEXPARAMETERIVPROC>("glTexParameteriv", Null_glTexParameteriv)),
+		TexImage1D(GetProc<PFNGLTEXIMAGE1DPROC>("glTexImage1D", Null_glTexImage1D)),
+		TexImage2D(GetProc<PFNGLTEXIMAGE2DPROC>("glTexImage2D", Null_glTexImage2D)),
+		DrawBuffer(GetProc<PFNGLDRAWBUFFERPROC>("glDrawBuffer", Null_glDrawBuffer)),
+		Clear(GetProc<PFNGLCLEARPROC>("glClear", Null_glClear)),
+		ClearColor(GetProc<PFNGLCLEARCOLORPROC>("glClearColor", Null_glClearColor)),
+		ClearStencil(GetProc<PFNGLCLEARSTENCILPROC>("glClearStencil", Null_glClearStencil)),
+		ClearDepth(GetProc<PFNGLCLEARDEPTHPROC>("glClearDepth", Null_glClearDepth)),
+		StencilMask(GetProc<PFNGLSTENCILMASKPROC>("glStencilMask", Null_glStencilMask)),
+		ColorMask(GetProc<PFNGLCOLORMASKPROC>("glColorMask", Null_glColorMask)),
+		DepthMask(GetProc<PFNGLDEPTHMASKPROC>("glDepthMask", Null_glDepthMask)),
+		Disable(GetProc<PFNGLDISABLEPROC>("glDisable", Null_glDisable)),
+		Enable(GetProc<PFNGLENABLEPROC>("glEnable", Null_glEnable)),
+		Finish(GetProc<PFNGLFINISHPROC>("glFinish", Null_glFinish)),
+		Flush(GetProc<PFNGLFLUSHPROC>("glFlush", Null_glFlush)),
+		BlendFunc(GetProc<PFNGLBLENDFUNCPROC>("glBlendFunc", Null_glBlendFunc)),
+		LogicOp(GetProc<PFNGLLOGICOPPROC>("glLogicOp", Null_glLogicOp)),
+		StencilFunc(GetProc<PFNGLSTENCILFUNCPROC>("glStencilFunc", Null_glStencilFunc)),
+		StencilOp(GetProc<PFNGLSTENCILOPPROC>("glStencilOp", Null_glStencilOp)),
+		DepthFunc(GetProc<PFNGLDEPTHFUNCPROC>("glDepthFunc", Null_glDepthFunc)),
+		PixelStoref(GetProc<PFNGLPIXELSTOREFPROC>("glPixelStoref", Null_glPixelStoref)),
+		PixelStorei(GetProc<PFNGLPIXELSTOREIPROC>("glPixelStorei", Null_glPixelStorei)),
+		ReadBuffer(GetProc<PFNGLREADBUFFERPROC>("glReadBuffer", Null_glReadBuffer)),
+		ReadPixels(GetProc<PFNGLREADPIXELSPROC>("glReadPixels", Null_glReadPixels)),
+		GetBooleanv(GetProc<PFNGLGETBOOLEANVPROC>("glGetBooleanv", Null_glGetBooleanv)),
+		GetDoublev(GetProc<PFNGLGETDOUBLEVPROC>("glGetDoublev", Null_glGetDoublev)),
+		GetError(GetProc<PFNGLGETERRORPROC>("glGetError", Null_glGetError)),
+		GetFloatv(GetProc<PFNGLGETFLOATVPROC>("glGetFloatv", Null_glGetFloatv)),
+		GetIntegerv(GetProc<PFNGLGETINTEGERVPROC>("glGetIntegerv", Null_glGetIntegerv)),
+		GetString(GetProc<PFNGLGETSTRINGPROC>("glGetString", Null_glGetString)),
+		GetTexImage(GetProc<PFNGLGETTEXIMAGEPROC>("glGetTexImage", Null_glGetTexImage)),
+		GetTexParameterfv(GetProc<PFNGLGETTEXPARAMETERFVPROC>("glGetTexParameterfv", Null_glGetTexParameterfv)),
+		GetTexParameteriv(GetProc<PFNGLGETTEXPARAMETERIVPROC>("glGetTexParameteriv", Null_glGetTexParameteriv)),
+		GetTexLevelParameterfv(GetProc<PFNGLGETTEXLEVELPARAMETERFVPROC>("glGetTexLevelParameterfv", Null_glGetTexLevelParameterfv)),
+		GetTexLevelParameteriv(GetProc<PFNGLGETTEXLEVELPARAMETERIVPROC>("glGetTexLevelParameteriv", Null_glGetTexLevelParameteriv)),
+		IsEnabled(GetProc<PFNGLISENABLEDPROC>("glIsEnabled", Null_glIsEnabled)),
+		DepthRange(GetProc<PFNGLDEPTHRANGEPROC>("glDepthRange", Null_glDepthRange)),
+		Viewport(GetProc<PFNGLVIEWPORTPROC>("glViewport", Null_glViewport)),
 		Ver_Major(0),
 		Ver_Minor(0),
 		Ver_Release(0)
