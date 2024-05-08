@@ -9,7 +9,21 @@ uniform sampler2D Texture;
 
 void main()
 {
-	vec2 uv = gl_FragCoord.xy / Resolution;
+	ivec2 FragCoord = ivec2(gl_FragCoord.xy);
+	ivec2 KernelSize = textureSize(Kernel, 0);
+	ivec2 KernelMid = KernelSize / 2;
+	vec4 Value = vec4(0);
 
-	Color = mix(texture(Texture, uv), texture(Kernel, uv), 0.5);
+	for(int y = 0; y < KernelSize.y; y++)
+	{
+		for(int x = 0; x < KernelSize.x; x++)
+		{
+			ivec2 xy = ivec2(x, y);
+			vec4 O = texelFetch(Texture, FragCoord + xy - KernelMid, 0);
+			vec4 K = texelFetch(Kernel, xy, 0);
+			Value += O * K;
+		}
+	}
+
+	Color = Value / float(KernelSize.x * KernelSize.y);
 }
