@@ -144,7 +144,6 @@ namespace RenderTaskSolver
         {
             auto& td = Config.sections[tn];
             auto& spath = td["save"];
-            auto sfmt = GetFormatByExt(spath);
             std::shared_ptr<TaskTexture> t;
             if (td.contains("load"))
             {
@@ -185,7 +184,7 @@ namespace RenderTaskSolver
                 throw InvalidTaskConfig((std::stringstream() << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.").str());
             }
             t->SavePath = spath;
-            t->SaveFormat = sfmt;
+            t->SaveFormat = GetFormatByExt(t->SavePath);
             TextureMap.insert({ tn, t });
         }
 
@@ -252,22 +251,24 @@ namespace RenderTaskSolver
     {
         for (auto& t : Tasks)
         {
+
+
             t->Process();
-        }
-        for (auto& tkv : TextureMap)
-        {
-            auto& tex = tkv.second;
-            if (tex->SavePath.size())
+            for (auto& tn : t->GetOutputs())
             {
-                tex->SaveFile();
+                auto& tex = TextureMap.at(tn);
+                if (tex->SavePath.size())
+                {
+                    tex->SaveFile();
+                }
             }
-        }
-        for (auto& skv : ShaderStorageMap)
-        {
-            auto& ss = skv.second;
-            if (ss->SavePath.size())
+            for (auto& ssn : t->GetShaderStorages())
             {
-                ss->Save(ss->SavePath);
+                auto& ss = ShaderStorageMap.at(ssn);
+                if (ss->SavePath.size())
+                {
+                    ss->Save(ss->SavePath);
+                }
             }
         }
     }
