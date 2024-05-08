@@ -1,3 +1,5 @@
+*.o
+*.a
 .vs
 intermediate/
 out/
