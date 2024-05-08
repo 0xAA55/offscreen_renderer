@@ -1,9 +1,19 @@
 #include "eglctx.hpp"
 
+#undef APIENTRY
+
 #include <KHR/khrplatform.h>
 #define EGL_EGLEXT_PROTOTYPES
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
+
+#ifndef APIENTRY
+#  if defined(__MINGW32__) || defined(__CYGWIN__) || (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED) || defined(__BORLANDC__)
+#    define APIENTRY __stdcall
+#  else
+#    define APIENTRY
+#  endif
+#endif
 
 namespace RenderTaskSolver
 {
@@ -14,7 +24,7 @@ namespace RenderTaskSolver
 
 	static void* APIENTRY glGetProcAddress(const char* procname)
 	{
-		return eglGetProcAddress(procname);
+		return reinterpret_cast<void*>(eglGetProcAddress(procname));
 	}
 
 	EGLCtx::EGLCtx()
@@ -28,15 +38,10 @@ namespace RenderTaskSolver
 			EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
 			EGL_NONE
 		};
-		static const EGLint pbufferAttribs[] = {
-			EGL_WIDTH, 640,
-			EGL_HEIGHT, 480,
-			EGL_NONE,
-		};
-		auto eglQueryDevicesEXT = (PFNEGLQUERYDEVICESEXTPROC)glGetProcAddress("eglQueryDevicesEXT");
+		auto eglQueryDevicesEXT = reinterpret_cast<PFNEGLQUERYDEVICESEXTPROC>(glGetProcAddress("eglQueryDevicesEXT"));
 		if (!eglQueryDevicesEXT) throw EGLCreateContextError("ERROR: extension eglQueryDevicesEXT not available");
 
-		auto eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
+		auto eglGetPlatformDisplayEXT = reinterpret_cast<PFNEGLGETPLATFORMDISPLAYEXTPROC>(eglGetProcAddress("eglGetPlatformDisplayEXT"));
 		if (!eglGetPlatformDisplayEXT) throw EGLCreateContextError("ERROR: extension eglGetPlatformDisplayEXT not available");
 
 		static const int MAX_DEVICES = 16;
