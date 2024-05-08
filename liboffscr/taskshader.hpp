@@ -45,7 +45,7 @@ namespace RenderTaskSolver
     class TaskShaderDraw : public TaskShader
     {
     protected:
-        const std::string DefaultVertexShaderCode = "#version 330\n"
+        const std::string DefaultVertexShaderCode = "#version 300 es\n"
             "in vec2 Position;"
             "void main()"
             "{"
