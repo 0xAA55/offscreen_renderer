@@ -25,6 +25,6 @@ namespace RenderTaskSolver
         HiddenGLFWWindow();
         ~HiddenGLFWWindow();
 
-        Context& GetOpenGLContext();
+        const Context& GetOpenGLContext() const;
     };
 }

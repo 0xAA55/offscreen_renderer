@@ -41,7 +41,7 @@ namespace RenderTaskSolver
         glfwTerminate();
     }
 
-    Context& HiddenGLFWWindow::GetOpenGLContext()
+    const Context& HiddenGLFWWindow::GetOpenGLContext() const
     {
         return *glCtx;
     }
