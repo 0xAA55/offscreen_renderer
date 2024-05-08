@@ -1,12 +1,18 @@
 #pragma once
 
-#include "glsstorage.hpp"
+#include "glbuffer.hpp"
 
 namespace RenderTaskSolver
 {
     using namespace GLObjects;
 
-    class TaskShaderStorage : public ShaderStorage
+    class LoadShaderStorageError : public std::runtime_error
+    {
+    public:
+        LoadShaderStorageError(std::string what) noexcept;
+    };
+
+    class TaskShaderStorage : public ShaderStorageBuffer
     {
     protected:
 
@@ -22,6 +28,7 @@ namespace RenderTaskSolver
         }
 
         std::string SavePath;
+        void Save(std::string Path);
     };
 }
 
