@@ -11,6 +11,11 @@ namespace RenderTaskSolver
         return err;
     }
 
+    void ErrorCallBack(int error, const char* description)
+    {
+        throw glfwCreateWindowFailure(description);
+    }
+
     glfwCreateWindowFailure::glfwCreateWindowFailure(const std::string& what) noexcept :
         std::runtime_error(what)
     {
@@ -24,6 +29,7 @@ namespace RenderTaskSolver
     HiddenGLFWWindow::HiddenGLFWWindow()
     {
         glfwInit();
+        glfwSetErrorCallback(ErrorCallBack);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
