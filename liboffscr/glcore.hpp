@@ -109,12 +109,12 @@ namespace GL
 
 	public:
 		template<typename FuncType>
-		FuncType GetProc(const char* symbol)
+		FuncType GetProc(const char* symbol, FuncType DefaultBehaviorFunc)
 		{
 			void *ProcAddress = GetProcAddress(symbol);
 			if (!ProcAddress)
 			{
-				throw NullFuncPtrException("OpenGL function pointer is null.\n");
+				return DefaultBehaviorFunc;
 			}
 			return reinterpret_cast<FuncType>(ProcAddress);
 		}
