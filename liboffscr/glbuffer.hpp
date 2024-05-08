@@ -55,21 +55,6 @@ namespace GLObjects
 	using TransformFeedbackBuffer = Buffer<Context::TRANSFORM_FEEDBACK_BUFFER>;
 	using UniformBuffer = Buffer<Context::UNIFORM_BUFFER>;
 
-	extern template ArrayBuffer;
-	extern template AtomicCounterBuffer;
-	extern template CopyReadBuffer;
-	extern template CopyWriteBuffer;
-	extern template DispatchIndirectBuffer;
-	extern template DrawIndirectBuffer;
-	extern template ElementArrayBuffer;
-	extern template PixelPackBuffer;
-	extern template PixelUnpackBuffer;
-	extern template QueryBuffer;
-	extern template ShaderStorageBuffer;
-	extern template TextureBuffer;
-	extern template TransformFeedbackBuffer;
-	extern template UniformBuffer;
-
 	template<GLenum BufferType>
 	class BufferBind
 	{
