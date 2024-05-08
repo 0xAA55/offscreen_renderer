@@ -57,7 +57,9 @@ namespace RenderTaskSolver
     static const std::unordered_map<std::string, TaskType> StrToTaskTypeEnum =
     {
         {"", TaskType::Task_Draw},
+        {"draw", TaskType::Task_Draw},
         {"Draw", TaskType::Task_Draw},
+        {"compute", TaskType::Task_Compute},
         {"Compute", TaskType::Task_Compute},
     };
 
@@ -518,7 +520,7 @@ namespace RenderTaskSolver
                 task = std::make_unique<RenderTaskDraw>(*this, tn, shader, inputs, outputs, shader_storages);
                 break;
             case TaskType::Task_Compute:
-                if (1)
+                do
                 {
                     uint32_t gx, gy, gz;
                     auto Groups = GetConfigValue(tn, "groups");
@@ -537,9 +539,9 @@ namespace RenderTaskSolver
                             << "`groups` should be 3 numbers separated by comma.";
                         throw InvalidTaskConfig(ss.str());
                     }
-                    if (shader) shader = LoadComputeShader(shadername);
+                    if (!shader) shader = LoadComputeShader(shadername);
                     task = std::make_unique<RenderTaskCompute>(*this, tn, shader, inputs, outputs, shader_storages, gx, gy, gz);
-                }
+                } while (false);
                 break;
             }
 
