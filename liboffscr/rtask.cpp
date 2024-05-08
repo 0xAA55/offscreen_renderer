@@ -89,7 +89,10 @@ namespace RenderTaskSolver
             {
                 std::cout << "Binding `" << t->GetName() << "` to framebuffer attachment" << attachment << "." << std::endl;
             }
-            draw_buffers[attachment] = gl.COLOR_ATTACHMENT0 + attachment;
+            if (attachment >= 0)
+            {
+                draw_buffers[attachment] = gl.COLOR_ATTACHMENT0 + attachment;
+            }
         }
 
         gl.DrawBuffers(Outputs.size(), &draw_buffers[0]);
