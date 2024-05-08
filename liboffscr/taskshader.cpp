@@ -67,7 +67,7 @@ namespace RenderTaskSolver
         gl.ShaderSource(Shader, 1, codes, sizes);
         gl.CompileShader(Shader);
 
-        GLint iv;
+        GLint iv = 0;
         gl.GetShaderiv(Shader, gl.COMPILE_STATUS, &iv);
         if (!iv) throw ShaderCompileError(GetShaderInfoLog(Shader));
     }
