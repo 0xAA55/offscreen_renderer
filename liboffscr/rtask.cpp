@@ -75,24 +75,32 @@ namespace RenderTaskSolver
         gl.GenFramebuffers(1, &FBO);
         gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, FBO);
 
-        GLenum attachment = 0;
+        GLint attachment = 0;
         auto draw_buffers = std::make_unique<GLenum[]>(Outputs.size());
         for (auto& o : Outputs)
         {
             auto& t = Solver.TextureMap[o];
-            OutWidth = max(OutWidth, t->GetWidth());
-            OutHeight = max(OutHeight, t->GetHeight());
-            attachment = gl.GetFragDataLocation(Program, t->ShaderOutputName.c_str());
-            gl.FramebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + attachment, gl.TEXTURE_2D, *t, 0);
 
-            if (Solver.Verbose)
+            GLint location = gl.GetFragDataLocation(Program, t->ShaderOutputName.c_str());
+            if (location >= 0)
             {
-                std::cout << "Binding `" << t->GetName() << "` to framebuffer attachment" << attachment << "." << std::endl;
+                if (Solver.Verbose)
+                {
+                    std::cout << "Binding `" << t->GetName() << "` to framebuffer attachment " << location << "." << std::endl;
+                }
+                OutWidth = max(OutWidth, t->GetWidth());
+                OutHeight = max(OutHeight, t->GetHeight());
+                gl.FramebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + location, gl.TEXTURE_2D, *t, 0);
             }
-            if (attachment >= 0)
+            else
             {
-                draw_buffers[attachment] = gl.COLOR_ATTACHMENT0 + attachment;
+                if (Solver.Verbose)
+                {
+                    std::cout << "Could not bind `" << t->GetName() << "` to a framebuffer attachment " << location << "." << std::endl;
+                }
             }
+            draw_buffers[attachment] = gl.COLOR_ATTACHMENT0 + location;
+            attachment++;
         }
 
         gl.DrawBuffers(Outputs.size(), &draw_buffers[0]);
