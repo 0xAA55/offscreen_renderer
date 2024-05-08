@@ -1,5 +1,5 @@
 #include "tasktex.hpp"
-#include "unibmp.hpp"
+#include <unibmp/unibmp.hpp>
 #include "tasksolver.hpp"
 #include <sstream>
 #include <iostream>
@@ -148,7 +148,7 @@ namespace RenderTaskSolver
 
     static void SaveBmp32Func(std::unique_ptr<Image_RGBA8> bmp, std::string SavePath, bool ReportThreadedFinished)
     {
-        bmp->SaveToBmp32(SavePath);
+        bmp->SaveToBmp32(SavePath, false);
         if (ReportThreadedFinished) ReportThreadFuncFinished(SavePath);
     }
 
