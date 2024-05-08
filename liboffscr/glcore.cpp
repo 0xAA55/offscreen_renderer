@@ -1,4 +1,7 @@
 #include "glcore.hpp"
+
+#include<cstring>
+
 #ifndef GLAPI
 #  if defined(__MINGW32__) || defined(__CYGWIN__) || (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED) || defined(__BORLANDC__)
 #    define GLAPI extern "C" __declspec(dllimport)
