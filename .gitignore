@@ -3,3 +3,5 @@ intermediate/
 out/
 *.filters
 *.user
+presets/output.*
+
