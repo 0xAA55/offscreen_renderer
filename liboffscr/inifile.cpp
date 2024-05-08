@@ -6,6 +6,7 @@
 
 namespace RenderTaskSolver
 {
+    using namespace StringUtil;
 
     IniFileError::IniFileError(size_t LineNo, const std::string& what) noexcept :
         LineNo(LineNo),

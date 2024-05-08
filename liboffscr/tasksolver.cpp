@@ -13,6 +13,8 @@
 
 namespace RenderTaskSolver
 {
+    using namespace StringUtil;
+
     InvalidTaskConfig::InvalidTaskConfig(const std::string& what) noexcept :
         std::runtime_error(what)
     {

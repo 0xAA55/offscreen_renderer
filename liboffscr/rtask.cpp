@@ -6,6 +6,8 @@
 
 namespace RenderTaskSolver
 {
+    using namespace StringUtil;
+
     FBOException::FBOException(const std::string& what) noexcept :
         std::runtime_error(what)
     {
