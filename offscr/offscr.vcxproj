@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;glfw3_mt.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;user32.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)
@@ -149,7 +149,7 @@ copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;glfw3_mt.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;user32.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <CustomBuildStep>
@@ -172,7 +172,7 @@ copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;glfw3_mt.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;user32.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)
@@ -202,7 +202,7 @@ copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;glfw3_mt.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;user32.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <CustomBuildStep>
