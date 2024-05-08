@@ -187,7 +187,6 @@
     <ClCompile Include="glbuffer.cpp" />
     <ClCompile Include="glcontext.cpp" />
     <ClCompile Include="glcore.cpp" />
-    <ClCompile Include="glfwctx.cpp" />
     <ClCompile Include="inifile.cpp" />
     <ClCompile Include="rtask.cpp" />
     <ClCompile Include="strutil.cpp" />
@@ -196,14 +195,12 @@
     <ClCompile Include="tasksstorage.cpp" />
     <ClCompile Include="tasktex.cpp" />
     <ClCompile Include="taskthread.cpp" />
-    <ClCompile Include="unibmp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eglctx.hpp" />
     <ClInclude Include="glbuffer.hpp" />
     <ClInclude Include="glcore.hpp" />
     <ClInclude Include="glcontext.hpp" />
-    <ClInclude Include="glfwctx.hpp" />
     <ClInclude Include="inifile.hpp" />
     <ClInclude Include="rtask.hpp" />
     <ClInclude Include="strutil.hpp" />
@@ -212,7 +209,6 @@
     <ClInclude Include="tasksstorage.hpp" />
     <ClInclude Include="tasktex.hpp" />
     <ClInclude Include="taskthread.hpp" />
-    <ClInclude Include="unibmp.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

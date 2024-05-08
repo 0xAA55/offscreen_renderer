@@ -80,6 +80,7 @@
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(PlatformTarget)_$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)_$(Configuration)\;$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,6 +88,7 @@
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(PlatformTarget)_$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)_$(Configuration)\;$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -94,6 +96,7 @@
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(PlatformTarget)_$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)_$(Configuration)\;$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -101,6 +104,7 @@
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(PlatformTarget)_$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir);$(SolutionDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)_$(Configuration)\;$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,10 +119,13 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;libEGL.lib;libGLESv2.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)</Command>
+      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)
+copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(SolutionDir)
+copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
+      <Outputs>$(SolutionDir)\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,10 +149,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;libEGL.lib;libGLESv2.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)</Command>
+      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)
+copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(SolutionDir)
+copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
+      <Outputs>$(SolutionDir)\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,10 +172,13 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;libEGL.lib;libGLESv2.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)</Command>
+      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)
+copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(SolutionDir)
+copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
+      <Outputs>$(SolutionDir)\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -188,10 +202,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>liboffscr.lib;libEGL.lib;libGLESv2.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>liboffscr.lib;unibmp.lib;libEGL.lib;libGLESv2.lib;opengl32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <CustomBuildStep>
-      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)</Command>
+      <Command>copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(OutDir)
+copy $(SolutionDir)dll\$(PlatformTarget)\*.dll $(SolutionDir)
+copy $(OutDir)$(TargetFileName) $(SolutionDir)</Command>
+      <Outputs>$(SolutionDir)\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
