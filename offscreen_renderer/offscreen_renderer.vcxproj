@@ -115,7 +115,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32s.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_mt.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,7 +139,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32s.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_mt.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -155,7 +155,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32s.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_mt.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -179,13 +179,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3_mt.lib;glew32s.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3_mt.lib;user32.lib;opengl32.lib;gdi32.lib;kernel32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glbuffer.cpp" />
     <ClCompile Include="glcontext.cpp" />
-    <ClCompile Include="glsstorage.cpp" />
     <ClCompile Include="glcore.cpp" />
     <ClCompile Include="glfwctx.cpp" />
     <ClCompile Include="inifile.cpp" />
@@ -200,7 +199,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glbuffer.hpp" />
-    <ClInclude Include="glsstorage.hpp" />
     <ClInclude Include="glcore.hpp" />
     <ClInclude Include="glcontext.hpp" />
     <ClInclude Include="glfwctx.hpp" />
