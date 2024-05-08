@@ -16,7 +16,6 @@ int main(int argc, char **argv)
     std::set<std::string> Options;
     for (int i = 2; i < argc; i++) Options.insert(argv[i]);
 
-    // Using a hidden GLFW window to achieve offscreen rendering.
     EGLCtx c;
     try
     {
