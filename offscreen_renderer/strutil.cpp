@@ -146,6 +146,7 @@ namespace RenderTaskSolver
         if (IsTrue(s)) return true;
         if (IsFalse(s)) return false;
         ThrowNotBoolean(s);
+        return false;
     }
 
     bool IsFalseWord(const std::string& s)
@@ -153,6 +154,7 @@ namespace RenderTaskSolver
         if (IsTrue(s)) return false;
         if (IsFalse(s)) return true;
         ThrowNotBoolean(s);
+        return false;
     }
 
     static void CheckNumFields(const size_t ExpectedNumFields, size_t ExactNumFields)
