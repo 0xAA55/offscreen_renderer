@@ -227,6 +227,17 @@ namespace RenderTaskSolver
             Config.sections[tn]["size"] = ss.str();
             ss = std::stringstream();
         }
+        if (spath.size())
+        {
+            auto sp = std::filesystem::path(spath);
+            if (sp.is_relative()) sp = WorkDir / sp;
+            spath = sp.string();
+
+            if (Verbose)
+            {
+                std::cout << "Texture `" << tn << "` will be saved to `" << std::filesystem::absolute(spath).string() << "`" << std::endl;
+            }
+        }
         if (size_str.size())
         {
             int w, h;
