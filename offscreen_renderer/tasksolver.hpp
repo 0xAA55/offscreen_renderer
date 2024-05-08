@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
 #include <stdexcept>
-#include <unordered_map>
+#include <filesystem>
 #include <set>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "taskthread.hpp"
@@ -46,8 +47,10 @@ namespace RenderTaskSolver
         friend class RenderTask;
         friend class RenderTaskDraw;
         friend class RenderTaskCompute;
+        friend class TaskTexture;
         Context& gl;
         IniFile Config;
+        std::filesystem::path WorkDir;
         std::set<std::string> Options;
         std::vector<std::unique_ptr<RenderTask>> Tasks;
         std::unordered_map<std::string, std::shared_ptr<TaskShader>> ShaderMap;
@@ -90,7 +93,7 @@ namespace RenderTaskSolver
         TaskThreadManager TaskThreads;
 
     public:
-        TaskSolver(Context& gl, const IniFile& TaskConf, const std::set<std::string>& Options = std::set<std::string>());
+        TaskSolver(Context& gl, const IniFile& TaskConf, const std::filesystem::path& ConfigDir = "", const std::set<std::string>& Options = std::set<std::string>());
         TaskSolver(Context& gl, const std::string& ConfFile, const std::set<std::string>& Options = std::set<std::string>());
 
         void SolveTasks();
