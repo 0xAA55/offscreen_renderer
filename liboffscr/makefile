@@ -2,17 +2,17 @@ CC=gcc
 LD=gcc
 AR=ar
 RANLIB=ranlib
-CFLAGS=-O3
-CXXFLAGS=-std=c++20 -O3
+CFLAGS=-O3 -fopenmp -I. -I.. -I../include
+CXXFLAGS=$(CFLAGS) -std=c++20
 LDFLAGS=-L.
-LDLIBS=-lstdc++
+LDLIBS=-lstdc++ -lgomp
 
 OBJS=
 OBJS+=glcore.o
 OBJS+=glbuffer.o
 OBJS+=glcontext.o
 OBJS+=glcore.o
-OBJS+=glfwctx.o
+OBJS+=eglctx.o
 OBJS+=inifile.o
 OBJS+=rtask.o
 OBJS+=strutil.o
@@ -21,12 +21,11 @@ OBJS+=tasksolver.o
 OBJS+=tasksstorage.o
 OBJS+=tasktex.o
 OBJS+=taskthread.o
-OBJS+=unibmp.o
 
 all: liboffscr.a
 
 liboffscr.a: $(OBJS)
-	$(AR) qc $@ $^
+	$(AR) qc $@ $(OBJS) 
 	$(RANLIB) $@
 
 clean:
