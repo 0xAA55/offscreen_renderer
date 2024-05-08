@@ -2,8 +2,14 @@
 #include "rtask.hpp"
 #include "strutil.hpp"
 #include <set>
+#include <string>
+#include <cctype>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
+#include <stdexcept>
+#include <filesystem>
+#include <unordered_map>
 
 namespace RenderTaskSolver
 {
@@ -22,20 +28,48 @@ namespace RenderTaskSolver
     {
     }
 
+    static const std::unordered_map<std::string, TexFileFormat> ExtToTexFileFormatEnum =
+    {
+        {"bmp", TexFileFormat::BMP},
+        {"png", TexFileFormat::PNG},
+        {"jpg", TexFileFormat::JPG},
+        {"gif", TexFileFormat::GIF},
+        {"tga", TexFileFormat::TGA},
+        {"ppm", TexFileFormat::PPM},
+        {"pic", TexFileFormat::PIC},
+        {"pnm", TexFileFormat::PNM},
+        {"psd", TexFileFormat::PSD},
+        {"hdr", TexFileFormat::HDR},
+    };
+
+    static const std::unordered_map<std::string, TextureFormat> StrToTextureFormatEnum =
+    {
+        {"", TextureFormat::RGBA8},
+        {"RGBA8", TextureFormat::RGBA8},
+        {"RGBA16", TextureFormat::RGBA16},
+        {"RGBA32", TextureFormat::RGBA32I},
+        {"RGBA32I", TextureFormat::RGBA32I},
+        {"RGBA32F", TextureFormat::RGBA32F},
+    };
+
+    static const std::unordered_map<std::string, TaskType> StrToTaskTypeEnum =
+    {
+        {"", TaskType::Task_Draw},
+        {"Draw", TaskType::Task_Draw},
+        {"Compute", TaskType::Task_Compute},
+    };
+
     static TexFileFormat GetFormatByExt(const std::string& path)
     {
         auto ExtPos = path.find_last_of(".") + 1;
-        if (IsSameWord(path.substr(ExtPos), "bmp")) return TexFileFormat::BMP;
-        else if (IsSameWord(path.substr(ExtPos), "png")) return TexFileFormat::PNG;
-        else if (IsSameWord(path.substr(ExtPos), "jpg")) return TexFileFormat::JPG;
-        else if (IsSameWord(path.substr(ExtPos), "gif")) return TexFileFormat::GIF;
-        else if (IsSameWord(path.substr(ExtPos), "tga")) return TexFileFormat::TGA;
-        else if (IsSameWord(path.substr(ExtPos), "ppm")) return TexFileFormat::PPM;
-        else if (IsSameWord(path.substr(ExtPos), "pic")) return TexFileFormat::PIC;
-        else if (IsSameWord(path.substr(ExtPos), "pnm")) return TexFileFormat::PNM;
-        else if (IsSameWord(path.substr(ExtPos), "psd")) return TexFileFormat::PSD;
-        else if (IsSameWord(path.substr(ExtPos), "hdr")) return TexFileFormat::HDR;
-        else
+        auto ext = path.substr(ExtPos);
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+        try
+        {
+            return ExtToTexFileFormatEnum.at(ext);
+        }
+        catch (const std::out_of_range&)
         {
             return TexFileFormat::Unknown;
         }
@@ -44,23 +78,11 @@ namespace RenderTaskSolver
     static TextureFormat GetTexFormatByStr(std::string fmt)
     {
         TrimInPlace(fmt);
-        if (fmt.size() == 0 || IsSameWord(fmt, "RGBA8"))
+        try
         {
-            return TextureFormat::RGBA8;
+            return StrToTextureFormatEnum.at(fmt);
         }
-        else if (IsSameWord(fmt, "RGBA16"))
-        {
-            return TextureFormat::RGBA16;
-        }
-        else if (IsSameWord(fmt, "RGBA32") || IsSameWord(fmt, "RGBA32I"))
-        {
-            return TextureFormat::RGBA32I;
-        }
-        else if (IsSameWord(fmt, "RGBA32F"))
-        {
-            return TextureFormat::RGBA32F;
-        }
-        else
+        catch (const std::out_of_range&)
         {
             return TextureFormat::Unknown;
         }
@@ -69,15 +91,11 @@ namespace RenderTaskSolver
     static TaskType GetTaskTypeByStr(std::string TypeStr)
     {
         TrimInPlace(TypeStr);
-        if (TypeStr.size() == 0 || IsSameWord(TypeStr, "Draw"))
+        try
         {
-            return TaskType::Task_Draw;
+            return StrToTaskTypeEnum.at(TypeStr);
         }
-        else if (IsSameWord(TypeStr, "Compute"))
-        {
-            return TaskType::Task_Compute;
-        }
-        else
+        catch (const std::out_of_range&)
         {
             std::stringstream ss;
             ss << "Unknown task type `" << TypeStr << "`. Task type should be `Draw` or `Compute`, default is `Draw`.";
@@ -91,17 +109,25 @@ namespace RenderTaskSolver
         std::string k = Trim(Key);
         std::string Value = Trim(Config.sections[s][k]);
         if (!GetReferencedValue) return Value;
-        std::set<std::string> RecursiveReferenceCheck = { (std::stringstream() << s << "." << k).str()};
+        std::stringstream ss;
+        ss << s << "." << k;
+        std::set<std::string> RecursiveReferenceCheck = { ss.str()};
+        ss = std::stringstream();
         while (Value[0] == '*')
         {
             auto Fwd = Split(Value.substr(1), '.');
-            if (Fwd.size() != 2) throw InvalidTaskConfig((std::stringstream() << "Invalid config reference `" << Value << "`").str());
+            if (Fwd.size() != 2)
+            {
+                ss << "Invalid config reference `" << Value << "`";
+                throw InvalidTaskConfig(ss.str());
+            }
             s = Trim(Fwd[0]);
             k = Trim(Fwd[1]);
-            auto s_k = (std::stringstream() << s << "." << k).str();
+            ss << s << "." << k;
+            auto s_k = ss.str();
+            ss = std::stringstream();
             if (RecursiveReferenceCheck.contains(s_k))
             {
-                std::stringstream ss;
                 ss << "Recursive reference detected:" << std::endl;
                 for (auto& i : RecursiveReferenceCheck) ss << " *" << i << std::endl;
                 throw InvalidTaskConfig(ss.str());
@@ -139,7 +165,9 @@ namespace RenderTaskSolver
         auto new_section_name = Replace(SectionName, "<batch>", BatchId);
         if (Config.sections.contains(new_section_name))
         {
-            throw InvalidTaskConfig((std::stringstream() << "Batch process error: conflict section name `" << new_section_name << "`").str());
+            std::stringstream ss;
+            ss << "Batch process error: conflict section name `" << new_section_name << "`";;
+            throw InvalidTaskConfig(ss.str());
         }
         Config.sections[new_section_name] = new_section;
     }
@@ -178,6 +206,7 @@ namespace RenderTaskSolver
         auto uniform = GetConfigValue(tn, "uniform");
         if (!uniform.size()) uniform = tn;
         std::shared_ptr<TaskTexture> t;
+        std::stringstream ss;
         if (lpath.size())
         {
             auto lp = std::filesystem::path(lpath);
@@ -191,13 +220,16 @@ namespace RenderTaskSolver
 
             t = std::make_shared<TaskTexture>(*this, tn, lpath, GetFormatByExt(lpath));
 
-            Config.sections[tn]["size"] = (std::stringstream() << t->GetWidth() << "," << t->GetHeight()).str();
+            ss << t->GetWidth() << "," << t->GetHeight();
+            Config.sections[tn]["size"] = ss.str();
+            ss = std::stringstream();
         }
         if (size_str.size())
         {
             int w, h;
             auto size_str = GetConfigValue(tn, "size");
-            auto badsize_string = (std::stringstream() << "Invalid attrib `size=" << size_str << "` of texture `" << tn << "`").str();
+            ss << "Invalid attrib `size=" << size_str << "` of texture `" << tn << "`";
+            auto badsize_string = ss.str();
             try
             {
                 auto wh = ParseIntFields(size_str, ",", 2);
@@ -207,14 +239,16 @@ namespace RenderTaskSolver
             }
             catch (const ParseError& e)
             {
-                throw InvalidTaskConfig((std::stringstream() << badsize_string << ": " << e.what()).str());
+                ss << badsize_string << ": " << e.what();
+                throw InvalidTaskConfig(ss.str());
             }
             if (t)
             {
                 if (static_cast<int>(t->GetWidth()) != w ||
                     static_cast<int>(t->GetHeight()) != h)
                 {
-                    throw InvalidTaskConfig((std::stringstream() << "Size of the texture `" << tn << "` is " << t->GetWidth() << "x" << t->GetHeight() << ", it doesn't match the attrib `size=" << size_str << "`").str());
+                    ss << "Size of the texture `" << tn << "` is " << t->GetWidth() << "x" << t->GetHeight() << ", it doesn't match the attrib `size=" << size_str << "`";
+                    throw InvalidTaskConfig(ss.str());
                 }
                 if (Verbose)
                 {
@@ -232,7 +266,8 @@ namespace RenderTaskSolver
         }
         if (!t)
         {
-            throw InvalidTaskConfig((std::stringstream() << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.").str());
+            ss << "For texture `" << tn << "` must have a `load` attrib or a `size` attrib.";
+            throw InvalidTaskConfig(ss.str());
         }
         t->UniformName = uniform;
         t->DontKeep = GetConfigValueBoolean(tn, "dontkeep", false);
@@ -276,6 +311,7 @@ namespace RenderTaskSolver
         auto lpath = GetConfigValue(ssn, "load");
         auto size_str = GetConfigValue(ssn, "size");
         std::shared_ptr<TaskShaderStorage> s;
+        std::stringstream ss;
         if (lpath.size())
         {
             auto lp = std::filesystem::path(lpath);
@@ -292,13 +328,16 @@ namespace RenderTaskSolver
         if (size_str.size())
         {
             int64_t size = ParseInt64Field(size_str);
-            auto badsize_error = InvalidTaskConfig((std::stringstream() << "Invalid attrib `size=" << size_str << "` of shader storage `" << ssn << "`").str());
+            ss << "Invalid attrib `size=" << size_str << "` of shader storage `" << ssn << "`";
+            auto badsize_error = InvalidTaskConfig(ss.str());
+            ss = std::stringstream();
             if (size <= 0) throw badsize_error;
             if (s)
             {
                 if (s->GetSize() != size)
                 {
-                    throw InvalidTaskConfig((std::stringstream() << "Size of the shader storage `" << ssn << "` is " << s->GetSize() << " bytes, it doesn't match the attrib `size=" << size_str << "`").str());
+                    ss << "Size of the shader storage `" << ssn << "` is " << s->GetSize() << " bytes, it doesn't match the attrib `size=" << size_str << "`";
+                    throw InvalidTaskConfig(ss.str());
                 }
                 if (Verbose)
                 {
@@ -317,7 +356,8 @@ namespace RenderTaskSolver
         }
         if (!s)
         {
-            throw InvalidTaskConfig((std::stringstream() << "For shader storage `" << ssn << "` must have a `load` attrib or a `size` attrib.").str());
+            ss << "For shader storage `" << ssn << "` must have a `load` attrib or a `size` attrib.";
+            throw InvalidTaskConfig(ss.str());
         }
         s->DontKeep = GetConfigValueBoolean(ssn, "dontkeep", false);
         s->SavePath = GetConfigValue(ssn, "save");
@@ -380,7 +420,7 @@ namespace RenderTaskSolver
         }
     }
 
-    TaskSolver::TaskSolver(Context& gl, const IniFile& TaskConf, const std::filesystem::path& ConfigDir, const std::set<std::string>& Options) :
+    TaskSolver::TaskSolver(const Context& gl, const IniFile& TaskConf, const std::filesystem::path& ConfigDir, const std::set<std::string>& Options) :
         gl(gl),
         Options(Options),
         Config(TaskConf),
@@ -425,7 +465,11 @@ namespace RenderTaskSolver
             if ((BatchEI > BatchBI && BatchStep < 0) ||
                 (BatchBI > BatchEI && BatchStep > 0) ||
                 (BatchBI != BatchEI && BatchStep == 0))
-                throw InvalidTaskConfig((std::stringstream() << "Invalid attrib `batch=" << BatchConfig << "` of section `common`").str());
+            {
+                std::stringstream ss;
+                ss << "Invalid attrib `batch=" << BatchConfig << "` of section `common`";
+                throw InvalidTaskConfig(ss.str());
+            }
 
             if (Verbose)
             {
@@ -535,7 +579,7 @@ namespace RenderTaskSolver
         }
     }
 
-    TaskSolver::TaskSolver(Context& gl, const std::string& ConfFile, const std::set<std::string>& Options) :
+    TaskSolver::TaskSolver(const Context& gl, const std::string& ConfFile, const std::set<std::string>& Options) :
         TaskSolver(gl, IniFile(ConfFile), std::filesystem::path(ConfFile).remove_filename(), Options)
     {
     }
@@ -580,7 +624,9 @@ namespace RenderTaskSolver
                     BatchStep < 0 ? i >= BatchEI :
                     true; i += BatchStep)
                 {
-                    std::string batch_id = (std::stringstream() << i).str();
+                    std::stringstream ss;
+                    ss << i;
+                    std::string batch_id = ss.str();
                     std::string batch_tn = Replace(tn, "<batch>", batch_id);
                     std::string batch_shadername = Replace(shadername, "<batch>", batch_id);
                     std::shared_ptr<TaskShader>& shader = ShaderMap[shadername];

@@ -21,12 +21,12 @@ namespace RenderTaskSolver
     class BindTexture
     {
     protected:
-        Context& gl;
+        const Context& gl;
         GLenum target;
     public:
         BindTexture() = delete;
         BindTexture(const BindTexture& c) = delete;
-        inline BindTexture(Context& gl, GLenum target, GLuint texture) :
+        inline BindTexture(const Context& gl, GLenum target, GLuint texture) :
             gl(gl), target(target)
         {
             gl.BindTexture(target, texture);

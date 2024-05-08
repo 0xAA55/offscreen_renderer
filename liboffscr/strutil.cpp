@@ -250,13 +250,13 @@ namespace RenderTaskSolver
         }
     }
 
-    template ParseIntField;
-    template ParseUIntField;
-    template ParseInt64Field;
-    template ParseUInt64Field;
-    template ParseFloatField;
-    template ParseDoubleField;
-    template ParseBooleanField;
+    template class ParseNumberField<int32_t>;
+    template class ParseNumberField<uint32_t>;
+    template class ParseNumberField<int64_t>;
+    template class ParseNumberField<uint64_t>;
+    template class ParseNumberField<float>;
+    template class ParseNumberField<double>;
+    template class ParseNumberField<bool>;
 
     template<typename NumberType> requires std::is_arithmetic_v<NumberType> || std::is_same_v<NumberType, bool>
     ParseNumberFields<NumberType>::ParseNumberFields(const std::string& Fields, const std::string& Delim, const size_t ExpectedNumFields) :
@@ -271,12 +271,11 @@ namespace RenderTaskSolver
         if (ExpectedNumFields) CheckNumFields(ExpectedNumFields, r.size());
     }
 
-    template ParseIntFields;
-    template ParseUIntFields;
-    template ParseInt64Fields;
-    template ParseUInt64Fields;
-    template ParseFloatFields;
-    template ParseDoubleFields;
-    template ParseBooleanFields;
-
+    template class ParseNumberFields<int32_t>;
+    template class ParseNumberFields<uint32_t>;
+    template class ParseNumberFields<int64_t>;
+    template class ParseNumberFields<uint64_t>;
+    template class ParseNumberFields<float>;
+    template class ParseNumberFields<double>;
+    template class ParseNumberFields<bool>;
 }

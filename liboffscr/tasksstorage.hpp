@@ -18,12 +18,12 @@ namespace RenderTaskSolver
         std::string Name;
 
     public:
-        TaskShaderStorage(Context& gl, const std::string& Name, size_t Size);
-        TaskShaderStorage(Context& gl, const std::string& Name, const void* Data, size_t Size);
-        TaskShaderStorage(Context& gl, const std::string& Name, const std::string& LoadFrom);
+        TaskShaderStorage(const Context& gl, const std::string& Name, size_t Size);
+        TaskShaderStorage(const Context& gl, const std::string& Name, const void* Data, size_t Size);
+        TaskShaderStorage(const Context& gl, const std::string& Name, const std::string& LoadFrom);
 
         template<typename UnitType>
-        TaskShaderStorage(Context& gl, const std::string& Name, const std::vector<UnitType>& Data) :
+        TaskShaderStorage(const Context& gl, const std::string& Name, const std::vector<UnitType>& Data) :
             TaskShaderStorage(gl, Name, Data.data(), Data.size() * sizeof(UnitType))
         {
         }

@@ -11,17 +11,17 @@ namespace GLObjects
 	class Buffer
 	{
 	protected:
-		Context& gl;
+		const Context& gl;
 		GLsizeiptr Size;
 		GLuint BO;
 
 	public:
 		Buffer() = delete;
 		Buffer(const Buffer& Dup) = delete;
-		Buffer(Context& gl, GLsizeiptr Size, GLenum Usage);
-		Buffer(Context& gl, const void* Data, GLsizeiptr Size, GLenum Usage);
+		Buffer(const Context& gl, GLsizeiptr Size, GLenum Usage);
+		Buffer(const Context& gl, const void* Data, GLsizeiptr Size, GLenum Usage);
 		template<typename VectorType>
-		Buffer(Context& gl, const std::vector<VectorType>& Data, GLenum Usage):
+		Buffer(const Context& gl, const std::vector<VectorType>& Data, GLenum Usage):
 			Buffer(gl, Data.data(), Data.size() * sizeof(VectorType), Usage)
 		{
 		}
@@ -75,43 +75,43 @@ namespace GLObjects
 	{
 	protected:
 		GLuint BO;
-		Context& gl;
+		const Context& gl;
 
 	public:
 		BufferBind() = delete;
-		BufferBind(Context& gl, GLuint BO);
+		BufferBind(const Context& gl, GLuint BO);
 		~BufferBind();
 	};
 
-	using ArrayBufferBind = Buffer<Context::ARRAY_BUFFER>;
-	using AtomicCounterBufferBind = Buffer<Context::ATOMIC_COUNTER_BUFFER>;
-	using CopyReadBufferBind = Buffer<Context::COPY_READ_BUFFER>;
-	using CopyWriteBufferBind = Buffer<Context::COPY_WRITE_BUFFER>;
-	using DispatchIndirectBufferBind = Buffer<Context::DISPATCH_INDIRECT_BUFFER>;
-	using DrawIndirectBufferBind = Buffer<Context::DRAW_INDIRECT_BUFFER>;
-	using ElementArrayBufferBind = Buffer<Context::ELEMENT_ARRAY_BUFFER>;
-	using PixelPackBufferBind = Buffer<Context::PIXEL_PACK_BUFFER>;
-	using PixelUnpackBufferBind = Buffer<Context::PIXEL_UNPACK_BUFFER>;
-	using QueryBufferBind = Buffer<Context::QUERY_BUFFER>;
-	using ShaderStorageBufferBind = Buffer<Context::SHADER_STORAGE_BUFFER>;
-	using TextureBufferBind = Buffer<Context::TEXTURE_BUFFER>;
-	using TransformFeedbackBufferBind = Buffer<Context::TRANSFORM_FEEDBACK_BUFFER>;
-	using UniformBufferBind = Buffer<Context::UNIFORM_BUFFER>;
+	using ArrayBufferBind = BufferBind<Context::ARRAY_BUFFER>;
+	using AtomicCounterBufferBind = BufferBind<Context::ATOMIC_COUNTER_BUFFER>;
+	using CopyReadBufferBind = BufferBind<Context::COPY_READ_BUFFER>;
+	using CopyWriteBufferBind = BufferBind<Context::COPY_WRITE_BUFFER>;
+	using DispatchIndirectBufferBind = BufferBind<Context::DISPATCH_INDIRECT_BUFFER>;
+	using DrawIndirectBufferBind = BufferBind<Context::DRAW_INDIRECT_BUFFER>;
+	using ElementArrayBufferBind = BufferBind<Context::ELEMENT_ARRAY_BUFFER>;
+	using PixelPackBufferBind = BufferBind<Context::PIXEL_PACK_BUFFER>;
+	using PixelUnpackBufferBind = BufferBind<Context::PIXEL_UNPACK_BUFFER>;
+	using QueryBufferBind = BufferBind<Context::QUERY_BUFFER>;
+	using ShaderStorageBufferBind = BufferBind<Context::SHADER_STORAGE_BUFFER>;
+	using TextureBufferBind = BufferBind<Context::TEXTURE_BUFFER>;
+	using TransformFeedbackBufferBind = BufferBind<Context::TRANSFORM_FEEDBACK_BUFFER>;
+	using UniformBufferBind = BufferBind<Context::UNIFORM_BUFFER>;
 
-	extern template ArrayBufferBind;
-	extern template AtomicCounterBufferBind;
-	extern template CopyReadBufferBind;
-	extern template CopyWriteBufferBind;
-	extern template DispatchIndirectBufferBind;
-	extern template DrawIndirectBufferBind;
-	extern template ElementArrayBufferBind;
-	extern template PixelPackBufferBind;
-	extern template PixelUnpackBufferBind;
-	extern template QueryBufferBind;
-	extern template ShaderStorageBufferBind;
-	extern template TextureBufferBind;
-	extern template TransformFeedbackBufferBind;
-	extern template UniformBufferBind;
+	extern template class BufferBind<Context::ARRAY_BUFFER>;
+	extern template class BufferBind<Context::ATOMIC_COUNTER_BUFFER>;
+	extern template class BufferBind<Context::COPY_READ_BUFFER>;
+	extern template class BufferBind<Context::COPY_WRITE_BUFFER>;
+	extern template class BufferBind<Context::DISPATCH_INDIRECT_BUFFER>;
+	extern template class BufferBind<Context::DRAW_INDIRECT_BUFFER>;
+	extern template class BufferBind<Context::ELEMENT_ARRAY_BUFFER>;
+	extern template class BufferBind<Context::PIXEL_PACK_BUFFER>;
+	extern template class BufferBind<Context::PIXEL_UNPACK_BUFFER>;
+	extern template class BufferBind<Context::QUERY_BUFFER>;
+	extern template class BufferBind<Context::SHADER_STORAGE_BUFFER>;
+	extern template class BufferBind<Context::TEXTURE_BUFFER>;
+	extern template class BufferBind<Context::TRANSFORM_FEEDBACK_BUFFER>;
+	extern template class BufferBind<Context::UNIFORM_BUFFER>;
 
 	template<GLenum Target, typename T>
 	class BufferMapper
@@ -119,7 +119,7 @@ namespace GLObjects
 	protected:
 		friend class Buffer<Target>;
 
-		Context& gl;
+		const Context& gl;
 		BufferBind<Target> Binding;
 		T* Pointer;
 

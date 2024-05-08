@@ -29,7 +29,7 @@ namespace RenderTaskSolver
     class RenderTask
     {
     protected:
-        Context& gl;
+        const Context& gl;
         TaskSolver& Solver;
         std::string Name;
         std::set<std::string> Inputs;

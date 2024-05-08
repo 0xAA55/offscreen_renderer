@@ -25,7 +25,7 @@ namespace RenderTaskSolver
     class TaskShader
     {
     protected:
-        Context& gl;
+        const Context& gl;
         GLuint ShaderProgram;
         std::string ShaderName;
 
@@ -34,7 +34,7 @@ namespace RenderTaskSolver
         void AttachShader(GLenum ShaderType, const std::string& ShaderCode);
 
     public:
-        TaskShader(Context& gl, const std::string& ShaderName);
+        TaskShader(const Context& gl, const std::string& ShaderName);
         ~TaskShader();
 
         std::string GetProgramInfoLog();
@@ -54,7 +54,7 @@ namespace RenderTaskSolver
 
     public:
         TaskShaderDraw() = delete;
-        TaskShaderDraw(Context& gl, const std::string& ShaderName, const std::string& FragmentShader, bool ArgIsShaderFilePath);
+        TaskShaderDraw(const Context& gl, const std::string& ShaderName, const std::string& FragmentShader, bool ArgIsShaderFilePath);
     };
 
 
@@ -64,7 +64,7 @@ namespace RenderTaskSolver
 
     public:
         TaskShaderCompute() = delete;
-        TaskShaderCompute(Context& gl, const std::string& ShaderName, const std::string& ComputeShader, bool ArgIsShaderFilePath);
+        TaskShaderCompute(const Context& gl, const std::string& ShaderName, const std::string& ComputeShader, bool ArgIsShaderFilePath);
     };
 
 }

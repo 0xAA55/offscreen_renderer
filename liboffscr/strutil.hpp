@@ -65,13 +65,13 @@ namespace RenderTaskSolver
 	using ParseDoubleField = ParseNumberField<double>;
 	using ParseBooleanField = ParseNumberField<bool>;
 
-	extern template ParseIntField;
-	extern template ParseUIntField;
-	extern template ParseInt64Field;
-	extern template ParseUInt64Field;
-	extern template ParseFloatField;
-	extern template ParseDoubleField;
-	extern template ParseBooleanField;
+	extern template class ParseNumberField<int32_t>;
+	extern template class ParseNumberField<uint32_t>;
+	extern template class ParseNumberField<int64_t>;
+	extern template class ParseNumberField<uint64_t>;
+	extern template class ParseNumberField<float>;
+	extern template class ParseNumberField<double>;
+	extern template class ParseNumberField<bool>;
 
 	template<typename NumberType> requires std::is_arithmetic_v<NumberType> || std::is_same_v<NumberType, bool>
 	class ParseNumberFields
@@ -95,11 +95,11 @@ namespace RenderTaskSolver
 	using ParseDoubleFields = ParseNumberFields<double>;
 	using ParseBooleanFields = ParseNumberFields<bool>;
 
-	extern template ParseIntFields;
-	extern template ParseUIntFields;
-	extern template ParseInt64Fields;
-	extern template ParseUInt64Fields;
-	extern template ParseFloatFields;
-	extern template ParseDoubleFields;
-	extern template ParseBooleanFields;
+	extern template class ParseNumberFields<int32_t>;
+	extern template class ParseNumberFields<uint32_t>;
+	extern template class ParseNumberFields<int64_t>;
+	extern template class ParseNumberFields<uint64_t>;
+	extern template class ParseNumberFields<float>;
+	extern template class ParseNumberFields<double>;
+	extern template class ParseNumberFields<bool>;
 }

@@ -48,7 +48,7 @@ namespace RenderTaskSolver
         friend class RenderTaskDraw;
         friend class RenderTaskCompute;
         friend class TaskTexture;
-        Context& gl;
+        const Context& gl;
         IniFile Config;
         std::filesystem::path WorkDir;
         std::set<std::string> Options;
@@ -93,8 +93,8 @@ namespace RenderTaskSolver
         TaskThreadManager TaskThreads;
 
     public:
-        TaskSolver(Context& gl, const IniFile& TaskConf, const std::filesystem::path& ConfigDir = "", const std::set<std::string>& Options = std::set<std::string>());
-        TaskSolver(Context& gl, const std::string& ConfFile, const std::set<std::string>& Options = std::set<std::string>());
+        TaskSolver(const Context& gl, const IniFile& TaskConf, const std::filesystem::path& ConfigDir = "", const std::set<std::string>& Options = std::set<std::string>());
+        TaskSolver(const Context& gl, const std::string& ConfFile, const std::set<std::string>& Options = std::set<std::string>());
 
         void SolveTasks();
     };

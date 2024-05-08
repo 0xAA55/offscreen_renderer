@@ -14,7 +14,7 @@ namespace RenderTaskSolver
     {
     }
 
-    TaskShader::TaskShader(Context& gl, const std::string& ShaderName) :
+    TaskShader::TaskShader(const Context& gl, const std::string& ShaderName) :
         gl(gl),
         ShaderName(ShaderName),
         ShaderProgram(gl.CreateProgram())
@@ -72,7 +72,7 @@ namespace RenderTaskSolver
         if (!iv) throw ShaderCompileError(GetShaderInfoLog(Shader));
     }
 
-    TaskShaderDraw::TaskShaderDraw(Context& gl, const std::string& ShaderName, const std::string& FragmentShader, bool ArgIsShaderFilePath) :
+    TaskShaderDraw::TaskShaderDraw(const Context& gl, const std::string& ShaderName, const std::string& FragmentShader, bool ArgIsShaderFilePath) :
         TaskShader(gl, ShaderName)
     {
         AttachShader(gl.VERTEX_SHADER, DefaultVertexShaderCode);
@@ -101,7 +101,7 @@ namespace RenderTaskSolver
         gl.DeleteProgram(ShaderProgram);
     }
 
-    TaskShaderCompute::TaskShaderCompute(Context& gl, const std::string& ShaderName, const std::string& ComputeShader, bool ArgIsShaderFilePath) :
+    TaskShaderCompute::TaskShaderCompute(const Context& gl, const std::string& ShaderName, const std::string& ComputeShader, bool ArgIsShaderFilePath) :
         TaskShader(gl, ShaderName)
     {
         std::string ComputeShaderCode;

@@ -53,7 +53,7 @@ namespace RenderTaskSolver
     {
     protected:
         TaskSolver& Solver;
-        Context& gl;
+        const Context& gl;
         std::string Name;
         GLuint glTex;
         TextureFormat TF;

@@ -19,21 +19,21 @@ namespace RenderTaskSolver
 		return std::vector<uint8_t>(std::istreambuf_iterator<char>(ifs), {});
 	}
 
-	TaskShaderStorage::TaskShaderStorage(Context& gl, const std::string& Name, size_t Size) :
+	TaskShaderStorage::TaskShaderStorage(const Context& gl, const std::string& Name, size_t Size) :
 		ShaderStorageBuffer(gl, nullptr, Size, gl.DYNAMIC_COPY),
 		Name(Name),
 		DontKeep(false)
 	{
 	}
 
-	TaskShaderStorage::TaskShaderStorage(Context& gl, const std::string& Name, const void* Data, size_t Size) :
+	TaskShaderStorage::TaskShaderStorage(const Context& gl, const std::string& Name, const void* Data, size_t Size) :
 		ShaderStorageBuffer(gl, Data, Size, gl.DYNAMIC_COPY),
 		Name(Name),
 		DontKeep(false)
 	{
 	}
 
-	TaskShaderStorage::TaskShaderStorage(Context& gl, const std::string& Name, const std::string& LoadFrom) :
+	TaskShaderStorage::TaskShaderStorage(const Context& gl, const std::string& Name, const std::string& LoadFrom) :
 		ShaderStorageBuffer(gl, LoadShaderStorageFromFile(LoadFrom), gl.DYNAMIC_COPY),
 		Name(Name),
 		DontKeep(false)
