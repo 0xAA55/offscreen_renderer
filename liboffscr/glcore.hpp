@@ -116,7 +116,7 @@ namespace GL
 			{
 				throw NullFuncPtrException("OpenGL function pointer is null.\n");
 			}
-			return static_cast<FuncType>(ProcAddress);
+			return reinterpret_cast<FuncType>(ProcAddress);
 		}
 		inline void GetVersion(int& Major, int& Minor, int& Release)
 		{

@@ -1,9 +1,9 @@
 #include "glcore.hpp"
 #ifndef GLAPI
-#  if defined(__MINGW32__) || defined(__CYGWIN__)
-#    define GLAPI extern "C"
-#  else
+#  if defined(__MINGW32__) || defined(__CYGWIN__) || (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED) || defined(__BORLANDC__)
 #    define GLAPI extern "C" __declspec(dllimport)
+#  else
+#    define GLAPI extern "C"
 #  endif
 #endif
 
@@ -159,7 +159,7 @@ namespace GL
 	static void APIENTRY Null_glBindTexture (GLenum target, GLuint texture){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteTextures (GLsizei n, const GLuint* textures){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenTextures (GLsizei n, GLuint* textures){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsTexture (GLuint texture){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsTexture (GLuint texture){ NullFuncPtr(); return 0; }
 	Version11::Version11(Func_GetProcAddress GetProcAddress):
 		Version10(GetProcAddress),
 		DrawArrays(Null_glDrawArrays),
@@ -537,7 +537,7 @@ namespace GL
 
 	static void APIENTRY Null_glGenQueries (GLsizei n, GLuint* ids){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteQueries (GLsizei n, const GLuint* ids){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsQuery (GLuint id){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsQuery (GLuint id){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBeginQuery (GLenum target, GLuint id){ NullFuncPtr(); }
 	static void APIENTRY Null_glEndQuery (GLenum target){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetQueryiv (GLenum target, GLenum pname, GLint* params){ NullFuncPtr(); }
@@ -546,12 +546,12 @@ namespace GL
 	static void APIENTRY Null_glBindBuffer (GLenum target, GLuint buffer){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteBuffers (GLsizei n, const GLuint* buffers){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenBuffers (GLsizei n, GLuint* buffers){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsBuffer (GLuint buffer){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsBuffer (GLuint buffer){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBufferData (GLenum target, GLsizeiptr size, const void* data, GLenum usage){ NullFuncPtr(); }
 	static void APIENTRY Null_glBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, const void* data){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetBufferSubData (GLenum target, GLintptr offset, GLsizeiptr size, void* data){ NullFuncPtr(); }
-	static void* APIENTRY Null_glMapBuffer (GLenum target, GLenum access){ NullFuncPtr(); return NULL; }
-	static GLboolean APIENTRY Null_glUnmapBuffer (GLenum target){ NullFuncPtr(); return NULL; }
+	static void* APIENTRY Null_glMapBuffer (GLenum target, GLenum access){ NullFuncPtr(); return 0; }
+	static GLboolean APIENTRY Null_glUnmapBuffer (GLenum target){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetBufferParameteriv (GLenum target, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetBufferPointerv (GLenum target, GLenum pname, void** params){ NullFuncPtr(); }
 	Version15::Version15(Func_GetProcAddress GetProcAddress):
@@ -614,8 +614,8 @@ namespace GL
 	static void APIENTRY Null_glAttachShader (GLuint program, GLuint shader){ NullFuncPtr(); }
 	static void APIENTRY Null_glBindAttribLocation (GLuint program, GLuint index, const GLchar* name){ NullFuncPtr(); }
 	static void APIENTRY Null_glCompileShader (GLuint shader){ NullFuncPtr(); }
-	static GLuint APIENTRY Null_glCreateProgram (void){ NullFuncPtr(); return NULL; }
-	static GLuint APIENTRY Null_glCreateShader (GLenum type){ NullFuncPtr(); return NULL; }
+	static GLuint APIENTRY Null_glCreateProgram (void){ NullFuncPtr(); return 0; }
+	static GLuint APIENTRY Null_glCreateShader (GLenum type){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glDeleteProgram (GLuint program){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteShader (GLuint shader){ NullFuncPtr(); }
 	static void APIENTRY Null_glDetachShader (GLuint program, GLuint shader){ NullFuncPtr(); }
@@ -624,21 +624,21 @@ namespace GL
 	static void APIENTRY Null_glGetActiveAttrib (GLuint program, GLuint index, GLsizei bufSize, GLsizei* length, GLint* size, GLenum* type, GLchar* name){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetActiveUniform (GLuint program, GLuint index, GLsizei bufSize, GLsizei* length, GLint* size, GLenum* type, GLchar* name){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetAttachedShaders (GLuint program, GLsizei maxCount, GLsizei* count, GLuint* shaders){ NullFuncPtr(); }
-	static GLint APIENTRY Null_glGetAttribLocation (GLuint program, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLint APIENTRY Null_glGetAttribLocation (GLuint program, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetProgramiv (GLuint program, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetProgramInfoLog (GLuint program, GLsizei bufSize, GLsizei* length, GLchar* infoLog){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetShaderiv (GLuint shader, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetShaderInfoLog (GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* infoLog){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetShaderSource (GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* source){ NullFuncPtr(); }
-	static GLint APIENTRY Null_glGetUniformLocation (GLuint program, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLint APIENTRY Null_glGetUniformLocation (GLuint program, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetUniformfv (GLuint program, GLint location, GLfloat* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetUniformiv (GLuint program, GLint location, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetVertexAttribdv (GLuint index, GLenum pname, GLdouble* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetVertexAttribfv (GLuint index, GLenum pname, GLfloat* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetVertexAttribiv (GLuint index, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetVertexAttribPointerv (GLuint index, GLenum pname, void** pointer){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsProgram (GLuint program){ NullFuncPtr(); return NULL; }
-	static GLboolean APIENTRY Null_glIsShader (GLuint shader){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsProgram (GLuint program){ NullFuncPtr(); return 0; }
+	static GLboolean APIENTRY Null_glIsShader (GLuint shader){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glLinkProgram (GLuint program){ NullFuncPtr(); }
 	static void APIENTRY Null_glShaderSource (GLuint shader, GLsizei count, const GLchar* const* string, const GLint* length){ NullFuncPtr(); }
 	static void APIENTRY Null_glUseProgram (GLuint program){ NullFuncPtr(); }
@@ -937,7 +937,7 @@ namespace GL
 	static void APIENTRY Null_glGetIntegeri_v (GLenum target, GLuint index, GLint* data){ NullFuncPtr(); }
 	static void APIENTRY Null_glEnablei (GLenum target, GLuint index){ NullFuncPtr(); }
 	static void APIENTRY Null_glDisablei (GLenum target, GLuint index){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsEnabledi (GLenum target, GLuint index){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsEnabledi (GLenum target, GLuint index){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBeginTransformFeedback (GLenum primitiveMode){ NullFuncPtr(); }
 	static void APIENTRY Null_glEndTransformFeedback (void){ NullFuncPtr(); }
 	static void APIENTRY Null_glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size){ NullFuncPtr(); }
@@ -972,7 +972,7 @@ namespace GL
 	static void APIENTRY Null_glVertexAttribI4usv (GLuint index, const GLushort* v){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetUniformuiv (GLuint program, GLint location, GLuint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glBindFragDataLocation (GLuint program, GLuint color, const GLchar* name){ NullFuncPtr(); }
-	static GLint APIENTRY Null_glGetFragDataLocation (GLuint program, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLint APIENTRY Null_glGetFragDataLocation (GLuint program, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glUniform1ui (GLint location, GLuint v0){ NullFuncPtr(); }
 	static void APIENTRY Null_glUniform2ui (GLint location, GLuint v0, GLuint v1){ NullFuncPtr(); }
 	static void APIENTRY Null_glUniform3ui (GLint location, GLuint v0, GLuint v1, GLuint v2){ NullFuncPtr(); }
@@ -989,18 +989,18 @@ namespace GL
 	static void APIENTRY Null_glClearBufferuiv (GLenum buffer, GLint drawbuffer, const GLuint* value){ NullFuncPtr(); }
 	static void APIENTRY Null_glClearBufferfv (GLenum buffer, GLint drawbuffer, const GLfloat* value){ NullFuncPtr(); }
 	static void APIENTRY Null_glClearBufferfi (GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil){ NullFuncPtr(); }
-	static const GLubyte* APIENTRY Null_glGetStringi (GLenum name, GLuint index){ NullFuncPtr(); return NULL; }
-	static GLboolean APIENTRY Null_glIsRenderbuffer (GLuint renderbuffer){ NullFuncPtr(); return NULL; }
+	static const GLubyte* APIENTRY Null_glGetStringi (GLenum name, GLuint index){ NullFuncPtr(); return 0; }
+	static GLboolean APIENTRY Null_glIsRenderbuffer (GLuint renderbuffer){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBindRenderbuffer (GLenum target, GLuint renderbuffer){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteRenderbuffers (GLsizei n, const GLuint* renderbuffers){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenRenderbuffers (GLsizei n, GLuint* renderbuffers){ NullFuncPtr(); }
 	static void APIENTRY Null_glRenderbufferStorage (GLenum target, GLenum internalformat, GLsizei width, GLsizei height){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetRenderbufferParameteriv (GLenum target, GLenum pname, GLint* params){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsFramebuffer (GLuint framebuffer){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsFramebuffer (GLuint framebuffer){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBindFramebuffer (GLenum target, GLuint framebuffer){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteFramebuffers (GLsizei n, const GLuint* framebuffers){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenFramebuffers (GLsizei n, GLuint* framebuffers){ NullFuncPtr(); }
-	static GLenum APIENTRY Null_glCheckFramebufferStatus (GLenum target){ NullFuncPtr(); return NULL; }
+	static GLenum APIENTRY Null_glCheckFramebufferStatus (GLenum target){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glFramebufferTexture1D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level){ NullFuncPtr(); }
 	static void APIENTRY Null_glFramebufferTexture2D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level){ NullFuncPtr(); }
 	static void APIENTRY Null_glFramebufferTexture3D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint zoffset){ NullFuncPtr(); }
@@ -1010,12 +1010,12 @@ namespace GL
 	static void APIENTRY Null_glBlitFramebuffer (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter){ NullFuncPtr(); }
 	static void APIENTRY Null_glRenderbufferStorageMultisample (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height){ NullFuncPtr(); }
 	static void APIENTRY Null_glFramebufferTextureLayer (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer){ NullFuncPtr(); }
-	static void* APIENTRY Null_glMapBufferRange (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access){ NullFuncPtr(); return NULL; }
+	static void* APIENTRY Null_glMapBufferRange (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glFlushMappedBufferRange (GLenum target, GLintptr offset, GLsizeiptr length){ NullFuncPtr(); }
 	static void APIENTRY Null_glBindVertexArray (GLuint array){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteVertexArrays (GLsizei n, const GLuint* arrays){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenVertexArrays (GLsizei n, GLuint* arrays){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsVertexArray (GLuint array){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsVertexArray (GLuint array){ NullFuncPtr(); return 0; }
 	Version30::Version30(Func_GetProcAddress GetProcAddress):
 		Version21(GetProcAddress),
 		ColorMaski(Null_glColorMaski),
@@ -1206,7 +1206,7 @@ namespace GL
 	static void APIENTRY Null_glGetUniformIndices (GLuint program, GLsizei uniformCount, const GLchar* const* uniformNames, GLuint* uniformIndices){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetActiveUniformsiv (GLuint program, GLsizei uniformCount, const GLuint* uniformIndices, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetActiveUniformName (GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei* length, GLchar* uniformName){ NullFuncPtr(); }
-	static GLuint APIENTRY Null_glGetUniformBlockIndex (GLuint program, const GLchar* uniformBlockName){ NullFuncPtr(); return NULL; }
+	static GLuint APIENTRY Null_glGetUniformBlockIndex (GLuint program, const GLchar* uniformBlockName){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetActiveUniformBlockiv (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetActiveUniformBlockName (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei* length, GLchar* uniformBlockName){ NullFuncPtr(); }
 	static void APIENTRY Null_glUniformBlockBinding (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding){ NullFuncPtr(); }
@@ -1253,10 +1253,10 @@ namespace GL
 	static void APIENTRY Null_glDrawElementsInstancedBaseVertex (GLenum mode, GLsizei count, GLenum type, const void* indices, GLsizei instancecount, GLint basevertex){ NullFuncPtr(); }
 	static void APIENTRY Null_glMultiDrawElementsBaseVertex (GLenum mode, const GLsizei* count, GLenum type, const void* const* indices, GLsizei drawcount, const GLint* basevertex){ NullFuncPtr(); }
 	static void APIENTRY Null_glProvokingVertex (GLenum mode){ NullFuncPtr(); }
-	static GLsync APIENTRY Null_glFenceSync (GLenum condition, GLbitfield flags){ NullFuncPtr(); return NULL; }
-	static GLboolean APIENTRY Null_glIsSync (GLsync sync){ NullFuncPtr(); return NULL; }
+	static GLsync APIENTRY Null_glFenceSync (GLenum condition, GLbitfield flags){ NullFuncPtr(); return 0; }
+	static GLboolean APIENTRY Null_glIsSync (GLsync sync){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glDeleteSync (GLsync sync){ NullFuncPtr(); }
-	static GLenum APIENTRY Null_glClientWaitSync (GLsync sync, GLbitfield flags, GLuint64 timeout){ NullFuncPtr(); return NULL; }
+	static GLenum APIENTRY Null_glClientWaitSync (GLsync sync, GLbitfield flags, GLuint64 timeout){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glWaitSync (GLsync sync, GLbitfield flags, GLuint64 timeout){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetInteger64v (GLenum pname, GLint64* data){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetSynciv (GLsync sync, GLenum pname, GLsizei count, GLsizei* length, GLint* values){ NullFuncPtr(); }
@@ -1320,10 +1320,10 @@ namespace GL
 
 
 	static void APIENTRY Null_glBindFragDataLocationIndexed (GLuint program, GLuint colorNumber, GLuint index, const GLchar* name){ NullFuncPtr(); }
-	static GLint APIENTRY Null_glGetFragDataIndex (GLuint program, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLint APIENTRY Null_glGetFragDataIndex (GLuint program, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGenSamplers (GLsizei count, GLuint* samplers){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteSamplers (GLsizei count, const GLuint* samplers){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsSampler (GLuint sampler){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsSampler (GLuint sampler){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBindSampler (GLuint unit, GLuint sampler){ NullFuncPtr(); }
 	static void APIENTRY Null_glSamplerParameteri (GLuint sampler, GLenum pname, GLint param){ NullFuncPtr(); }
 	static void APIENTRY Null_glSamplerParameteriv (GLuint sampler, GLenum pname, const GLint* param){ NullFuncPtr(); }
@@ -1532,8 +1532,8 @@ namespace GL
 	static void APIENTRY Null_glUniformMatrix4x2dv (GLint location, GLsizei count, GLboolean transpose, const GLdouble* value){ NullFuncPtr(); }
 	static void APIENTRY Null_glUniformMatrix4x3dv (GLint location, GLsizei count, GLboolean transpose, const GLdouble* value){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetUniformdv (GLuint program, GLint location, GLdouble* params){ NullFuncPtr(); }
-	static GLint APIENTRY Null_glGetSubroutineUniformLocation (GLuint program, GLenum shadertype, const GLchar* name){ NullFuncPtr(); return NULL; }
-	static GLuint APIENTRY Null_glGetSubroutineIndex (GLuint program, GLenum shadertype, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLint APIENTRY Null_glGetSubroutineUniformLocation (GLuint program, GLenum shadertype, const GLchar* name){ NullFuncPtr(); return 0; }
+	static GLuint APIENTRY Null_glGetSubroutineIndex (GLuint program, GLenum shadertype, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetActiveSubroutineUniformiv (GLuint program, GLenum shadertype, GLuint index, GLenum pname, GLint* values){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetActiveSubroutineUniformName (GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei* length, GLchar* name){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetActiveSubroutineName (GLuint program, GLenum shadertype, GLuint index, GLsizei bufSize, GLsizei* length, GLchar* name){ NullFuncPtr(); }
@@ -1545,7 +1545,7 @@ namespace GL
 	static void APIENTRY Null_glBindTransformFeedback (GLenum target, GLuint id){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteTransformFeedbacks (GLsizei n, const GLuint* ids){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenTransformFeedbacks (GLsizei n, GLuint* ids){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsTransformFeedback (GLuint id){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsTransformFeedback (GLuint id){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glPauseTransformFeedback (void){ NullFuncPtr(); }
 	static void APIENTRY Null_glResumeTransformFeedback (void){ NullFuncPtr(); }
 	static void APIENTRY Null_glDrawTransformFeedback (GLenum mode, GLuint id){ NullFuncPtr(); }
@@ -1669,11 +1669,11 @@ namespace GL
 	static void APIENTRY Null_glProgramParameteri (GLuint program, GLenum pname, GLint value){ NullFuncPtr(); }
 	static void APIENTRY Null_glUseProgramStages (GLuint pipeline, GLbitfield stages, GLuint program){ NullFuncPtr(); }
 	static void APIENTRY Null_glActiveShaderProgram (GLuint pipeline, GLuint program){ NullFuncPtr(); }
-	static GLuint APIENTRY Null_glCreateShaderProgramv (GLenum type, GLsizei count, const GLchar* const* strings){ NullFuncPtr(); return NULL; }
+	static GLuint APIENTRY Null_glCreateShaderProgramv (GLenum type, GLsizei count, const GLchar* const* strings){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glBindProgramPipeline (GLuint pipeline){ NullFuncPtr(); }
 	static void APIENTRY Null_glDeleteProgramPipelines (GLsizei n, const GLuint* pipelines){ NullFuncPtr(); }
 	static void APIENTRY Null_glGenProgramPipelines (GLsizei n, GLuint* pipelines){ NullFuncPtr(); }
-	static GLboolean APIENTRY Null_glIsProgramPipeline (GLuint pipeline){ NullFuncPtr(); return NULL; }
+	static GLboolean APIENTRY Null_glIsProgramPipeline (GLuint pipeline){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetProgramPipelineiv (GLuint pipeline, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glProgramUniform1i (GLuint program, GLint location, GLint v0){ NullFuncPtr(); }
 	static void APIENTRY Null_glProgramUniform1iv (GLuint program, GLint location, GLsizei count, const GLint* value){ NullFuncPtr(); }
@@ -2004,11 +2004,11 @@ namespace GL
 	static void APIENTRY Null_glMultiDrawArraysIndirect (GLenum mode, const void* indirect, GLsizei drawcount, GLsizei stride){ NullFuncPtr(); }
 	static void APIENTRY Null_glMultiDrawElementsIndirect (GLenum mode, GLenum type, const void* indirect, GLsizei drawcount, GLsizei stride){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetProgramInterfaceiv (GLuint program, GLenum programInterface, GLenum pname, GLint* params){ NullFuncPtr(); }
-	static GLuint APIENTRY Null_glGetProgramResourceIndex (GLuint program, GLenum programInterface, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLuint APIENTRY Null_glGetProgramResourceIndex (GLuint program, GLenum programInterface, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetProgramResourceName (GLuint program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei* length, GLchar* name){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetProgramResourceiv (GLuint program, GLenum programInterface, GLuint index, GLsizei propCount, const GLenum* props, GLsizei count, GLsizei* length, GLint* params){ NullFuncPtr(); }
-	static GLint APIENTRY Null_glGetProgramResourceLocation (GLuint program, GLenum programInterface, const GLchar* name){ NullFuncPtr(); return NULL; }
-	static GLint APIENTRY Null_glGetProgramResourceLocationIndex (GLuint program, GLenum programInterface, const GLchar* name){ NullFuncPtr(); return NULL; }
+	static GLint APIENTRY Null_glGetProgramResourceLocation (GLuint program, GLenum programInterface, const GLchar* name){ NullFuncPtr(); return 0; }
+	static GLint APIENTRY Null_glGetProgramResourceLocationIndex (GLuint program, GLenum programInterface, const GLchar* name){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glShaderStorageBlockBinding (GLuint program, GLuint storageBlockIndex, GLuint storageBlockBinding){ NullFuncPtr(); }
 	static void APIENTRY Null_glTexBufferRange (GLenum target, GLenum internalformat, GLuint buffer, GLintptr offset, GLsizeiptr size){ NullFuncPtr(); }
 	static void APIENTRY Null_glTexStorage2DMultisample (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations){ NullFuncPtr(); }
@@ -2023,7 +2023,7 @@ namespace GL
 	static void APIENTRY Null_glDebugMessageControl (GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled){ NullFuncPtr(); }
 	static void APIENTRY Null_glDebugMessageInsert (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* buf){ NullFuncPtr(); }
 	static void APIENTRY Null_glDebugMessageCallback (GLDEBUGPROC callback, const void* userParam){ NullFuncPtr(); }
-	static GLuint APIENTRY Null_glGetDebugMessageLog (GLuint count, GLsizei bufSize, GLenum* sources, GLenum* types, GLuint* ids, GLenum* severities, GLsizei* lengths, GLchar* messageLog){ NullFuncPtr(); return NULL; }
+	static GLuint APIENTRY Null_glGetDebugMessageLog (GLuint count, GLsizei bufSize, GLenum* sources, GLenum* types, GLuint* ids, GLenum* severities, GLsizei* lengths, GLchar* messageLog){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glPushDebugGroup (GLenum source, GLuint id, GLsizei length, const GLchar* message){ NullFuncPtr(); }
 	static void APIENTRY Null_glPopDebugGroup (void){ NullFuncPtr(); }
 	static void APIENTRY Null_glObjectLabel (GLenum identifier, GLuint name, GLsizei length, const GLchar* label){ NullFuncPtr(); }
@@ -2185,9 +2185,9 @@ namespace GL
 	static void APIENTRY Null_glCopyNamedBufferSubData (GLuint readBuffer, GLuint writeBuffer, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size){ NullFuncPtr(); }
 	static void APIENTRY Null_glClearNamedBufferData (GLuint buffer, GLenum internalformat, GLenum format, GLenum type, const void* data){ NullFuncPtr(); }
 	static void APIENTRY Null_glClearNamedBufferSubData (GLuint buffer, GLenum internalformat, GLintptr offset, GLsizeiptr size, GLenum format, GLenum type, const void* data){ NullFuncPtr(); }
-	static void* APIENTRY Null_glMapNamedBuffer (GLuint buffer, GLenum access){ NullFuncPtr(); return NULL; }
-	static void* APIENTRY Null_glMapNamedBufferRange (GLuint buffer, GLintptr offset, GLsizeiptr length, GLbitfield access){ NullFuncPtr(); return NULL; }
-	static GLboolean APIENTRY Null_glUnmapNamedBuffer (GLuint buffer){ NullFuncPtr(); return NULL; }
+	static void* APIENTRY Null_glMapNamedBuffer (GLuint buffer, GLenum access){ NullFuncPtr(); return 0; }
+	static void* APIENTRY Null_glMapNamedBufferRange (GLuint buffer, GLintptr offset, GLsizeiptr length, GLbitfield access){ NullFuncPtr(); return 0; }
+	static GLboolean APIENTRY Null_glUnmapNamedBuffer (GLuint buffer){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glFlushMappedNamedBufferRange (GLuint buffer, GLintptr offset, GLsizeiptr length){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetNamedBufferParameteriv (GLuint buffer, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetNamedBufferParameteri64v (GLuint buffer, GLenum pname, GLint64* params){ NullFuncPtr(); }
@@ -2208,7 +2208,7 @@ namespace GL
 	static void APIENTRY Null_glClearNamedFramebufferfv (GLuint framebuffer, GLenum buffer, GLint drawbuffer, const GLfloat* value){ NullFuncPtr(); }
 	static void APIENTRY Null_glClearNamedFramebufferfi (GLuint framebuffer, GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil){ NullFuncPtr(); }
 	static void APIENTRY Null_glBlitNamedFramebuffer (GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter){ NullFuncPtr(); }
-	static GLenum APIENTRY Null_glCheckNamedFramebufferStatus (GLuint framebuffer, GLenum target){ NullFuncPtr(); return NULL; }
+	static GLenum APIENTRY Null_glCheckNamedFramebufferStatus (GLuint framebuffer, GLenum target){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetNamedFramebufferParameteriv (GLuint framebuffer, GLenum pname, GLint* param){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetNamedFramebufferAttachmentParameteriv (GLuint framebuffer, GLenum attachment, GLenum pname, GLint* params){ NullFuncPtr(); }
 	static void APIENTRY Null_glCreateRenderbuffers (GLsizei n, GLuint* renderbuffers){ NullFuncPtr(); }
@@ -2272,7 +2272,7 @@ namespace GL
 	static void APIENTRY Null_glMemoryBarrierByRegion (GLbitfield barriers){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetTextureSubImage (GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLsizei bufSize, void* pixels){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetCompressedTextureSubImage (GLuint texture, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei bufSize, void* pixels){ NullFuncPtr(); }
-	static GLenum APIENTRY Null_glGetGraphicsResetStatus (void){ NullFuncPtr(); return NULL; }
+	static GLenum APIENTRY Null_glGetGraphicsResetStatus (void){ NullFuncPtr(); return 0; }
 	static void APIENTRY Null_glGetnCompressedTexImage (GLenum target, GLint lod, GLsizei bufSize, void* pixels){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetnTexImage (GLenum target, GLint level, GLenum format, GLenum type, GLsizei bufSize, void* pixels){ NullFuncPtr(); }
 	static void APIENTRY Null_glGetnUniformdv (GLuint program, GLint location, GLsizei bufSize, GLdouble* params){ NullFuncPtr(); }
