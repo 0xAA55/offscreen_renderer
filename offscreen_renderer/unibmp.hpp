@@ -12,25 +12,25 @@ namespace UniformBitmap
 	class ReadBmpFileError : public std::runtime_error
 	{
 	public:
-		ReadBmpFileError(std::string what) noexcept;
+		ReadBmpFileError(const std::string& what) noexcept;
 	};
 
 	class WriteBmpFileError : public std::runtime_error
 	{
 	public:
-		WriteBmpFileError(std::string what) noexcept;
+		WriteBmpFileError(const std::string& what) noexcept;
 	};
 
 	class LoadImageError : public std::runtime_error
 	{
 	public:
-		LoadImageError(std::string what) noexcept;
+		LoadImageError(const std::string& what) noexcept;
 	};
 
 	class SaveImageError : public std::runtime_error
 	{
 	public:
-		SaveImageError(std::string what) noexcept;
+		SaveImageError(const std::string& what) noexcept;
 	};
 
 	template<typename ChannelType_> struct Pixel_RGBA;
@@ -129,7 +129,7 @@ namespace UniformBitmap
 		void CreateBuffer(uint32_t w, uint32_t h);
 
 		// ¥” BMP º”‘ÿ
-		void LoadBmp(std::string FilePath);
+		void LoadBmp(const std::string& FilePath);
 
 	public:
 		using ChannelType = PixelType::ChannelType;
@@ -153,20 +153,20 @@ namespace UniformBitmap
 		uint32_t XPelsPerMeter;
 		uint32_t YPelsPerMeter;
 
-		Image(std::string FilePath);
+		Image(const std::string& FilePath);
 		Image(uint32_t Width, uint32_t Height, uint32_t XPelsPerMeter = 3000, uint32_t YPelsPerMeter = 3000);
 		Image(const Image& from);
 		template<typename FromType> Image(const Image<FromType>& from);
 
 		void BGR2RGB();
 
-		void SaveToBmp24(std::string FilePath, bool InverseLineOrder = false) const;
-		void SaveToBmp32(std::string FilePath, bool InverseLineOrder = false) const;
+		void SaveToBmp24(const std::string& FilePath, bool InverseLineOrder = false) const;
+		void SaveToBmp32(const std::string& FilePath, bool InverseLineOrder = false) const;
 
-		void SaveToPNG(std::string FilePath) const;
-		void SaveToTGA(std::string FilePath) const;
-		void SaveToJPG(std::string FilePath, int Quality) const;
-		void SaveToHDR(std::string FilePath) const;
+		void SaveToPNG(const std::string& FilePath) const;
+		void SaveToTGA(const std::string& FilePath) const;
+		void SaveToJPG(const std::string& FilePath, int Quality) const;
+		void SaveToHDR(const std::string& FilePath) const;
 	};
 
 	extern template Image_RGBA8;
