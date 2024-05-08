@@ -16,15 +16,17 @@ int main(int argc, char **argv)
     std::set<std::string> Options;
     for (int i = 2; i < argc; i++) Options.insert(argv[i]);
 
+    // Using a hidden GLFW window to achieve offscreen rendering.
     HiddenGLFWWindow w;
     try
     {
         TaskSolver s(w.GetOpenGLContext(), argv[1], Options);
         s.SolveTasks();
     }
-    catch (const std::runtime_error& e)
+    catch (const std::exception& e)
     {
-        std::cout << e.what();
+        std::cerr << e.what();
+        return 2;
     }
     
     return 0;
