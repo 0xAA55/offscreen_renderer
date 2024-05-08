@@ -68,7 +68,7 @@ namespace RenderTaskSolver
         return v1 < v2 ? v2 : v1;
     }
 
-    void RenderTaskDraw::EnsureFBO()
+    void RenderTaskDraw::EnsureFBO(GLuint Program)
     {
         if (FBO) return;
 
@@ -82,6 +82,7 @@ namespace RenderTaskSolver
             auto& t = Solver.TextureMap[o];
             OutWidth = max(OutWidth, t->GetWidth());
             OutHeight = max(OutHeight, t->GetHeight());
+            attachment = gl.GetFragDataLocation(Program, t->ShaderOutputName.c_str());
             gl.FramebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + attachment, gl.TEXTURE_2D, *t, 0);
 
             if (Solver.Verbose)
@@ -89,10 +90,9 @@ namespace RenderTaskSolver
                 std::cout << "Binding `" << t->GetName() << "` to framebuffer attachment" << attachment << "." << std::endl;
             }
             draw_buffers[attachment] = gl.COLOR_ATTACHMENT0 + attachment;
-            attachment++;
         }
 
-        gl.DrawBuffers(attachment, &draw_buffers[0]);
+        gl.DrawBuffers(Outputs.size(), &draw_buffers[0]);
         gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, 0);
     }
 
@@ -100,7 +100,7 @@ namespace RenderTaskSolver
     {
         GLuint Program = *Shader;
 
-        EnsureFBO();
+        EnsureFBO(Program);
         gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, FBO);
         gl.Viewport(0, 0, OutWidth, OutHeight);
 

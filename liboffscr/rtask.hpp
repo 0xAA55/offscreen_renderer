@@ -53,7 +53,7 @@ namespace RenderTaskSolver
     class RenderTaskDraw : public RenderTask
     {
     protected:
-        void EnsureFBO();
+        void EnsureFBO(GLuint Program);
 
         GLuint FBO;
         GLuint Pipe;
