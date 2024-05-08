@@ -3,6 +3,7 @@
 #include "strutil.hpp"
 
 #include <iostream>
+#include <memory>
 
 namespace RenderTaskSolver
 {
@@ -72,25 +73,27 @@ namespace RenderTaskSolver
         if (FBO) return;
 
         gl.GenFramebuffers(1, &FBO);
-        gl.BindFramebuffer(gl.FRAMEBUFFER, FBO);
+        gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, FBO);
 
         GLenum attachment = 0;
+        auto draw_buffers = std::make_unique<GLenum[]>(Outputs.size());
         for (auto& o : Outputs)
         {
             auto& t = Solver.TextureMap[o];
             OutWidth = max(OutWidth, t->GetWidth());
             OutHeight = max(OutHeight, t->GetHeight());
-            gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + attachment, gl.TEXTURE_2D, *t, 0);
+            gl.FramebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + attachment, gl.TEXTURE_2D, *t, 0);
 
             if (Solver.Verbose)
             {
                 std::cout << "Binding `" << t->GetName() << "` to framebuffer attachment" << attachment << "." << std::endl;
             }
-
+            draw_buffers[attachment] = gl.COLOR_ATTACHMENT0 + attachment;
             attachment++;
         }
 
-        gl.BindFramebuffer(gl.FRAMEBUFFER, 0);
+        gl.DrawBuffers(attachment, &draw_buffers[0]);
+        gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, 0);
     }
 
     void RenderTaskDraw::Process()
@@ -98,7 +101,7 @@ namespace RenderTaskSolver
         GLuint Program = *Shader;
 
         EnsureFBO();
-        gl.BindFramebuffer(gl.FRAMEBUFFER, FBO);
+        gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, FBO);
         gl.Viewport(0, 0, OutWidth, OutHeight);
 
         if (Solver.Verbose)
@@ -146,7 +149,7 @@ namespace RenderTaskSolver
 
         BufferBind<gl.ELEMENT_ARRAY_BUFFER> b(gl, Solver.BBEB);
         gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, nullptr);
-        gl.BindFramebuffer(gl.FRAMEBUFFER, 0);
+        gl.BindFramebuffer(gl.DRAW_FRAMEBUFFER, 0);
     }
 
     RenderTaskCompute::RenderTaskCompute(TaskSolver& Solver, const std::string& Name, std::shared_ptr<TaskShader> Shader, std::set<std::string> Inputs, std::set<std::string> Outputs, std::set<std::string> ShaderStorages, uint32_t numGroupX, uint32_t numGroupY, uint32_t numGroupZ) :
