@@ -23,15 +23,15 @@ namespace RenderTaskSolver
 
     static void* APIENTRY GLFWGetProcAddress(const char* procname)
     {
-        return glfwGetProcAddress(procname);
+        return reinterpret_cast<void*>(glfwGetProcAddress(procname));
     }
 
     HiddenGLFWWindow::HiddenGLFWWindow()
     {
         glfwInit();
         glfwSetErrorCallback(ErrorCallBack);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         window = glfwCreateWindow(640, 480, "", NULL, NULL);
         if (!window) throw glfwCreateWindowFailure(GetGLFWErrorString());
