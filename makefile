@@ -3,7 +3,7 @@ LD=gcc
 CFLAGS=-O3 -fopenmp -I. -Iinclude -fmax-errors=5
 CXXFLAGS=$(CFLAGS) -std=c++20
 LDFLAGS=-L. -Lliboffscr -Lunibmp
-LDLIBS=-lm -lstdc++ -loffscr -lunibmp -lgomp -lGL -lEGL
+LDLIBS=-lm -lstdc++ -loffscr -lunibmp -lgomp -lGL -lEGL -lglfw
 
 all: gpurenderer
 
