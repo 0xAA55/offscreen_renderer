@@ -61,7 +61,7 @@ namespace RenderTaskSolver
     void TaskShader::AttachShader(GLenum ShaderType, const std::string& ShaderCode)
     {
         GLuint Shader = gl.CreateShader(ShaderType);
-        if (!Shader) throw ShaderCompileError(std::string("Invalid shader type `") + ShaderType + "`: not supported for the current opengl context. Are you using OpenGL ES 3.0 ?");
+        if (!Shader) throw ShaderCompileError(std::string("Invalid shader type `") + std::to_string(ShaderType) + "`: not supported for the current opengl context. Are you using OpenGL ES 3.0 ?");
 
         gl.AttachShader(ShaderProgram, Shader);
         gl.DeleteShader(Shader);
