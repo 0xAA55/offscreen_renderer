@@ -52,9 +52,10 @@ namespace RenderTaskSolver
         GLsizei si, so;
         gl.GetShaderiv(Shader, gl.INFO_LOG_LENGTH, &iv);
         si = iv;
-        auto buf = std::make_unique<char[]>(si);
+        auto buf = std::string();
+        buf.resize(si);
         gl.GetShaderInfoLog(Shader, si, &so, &buf[0]);
-        return std::string(buf.get());
+        return buf;
     }
 
     void TaskShader::AttachShader(GLenum ShaderType, const std::string& ShaderCode)
