@@ -48,7 +48,7 @@ namespace RenderTaskSolver
 
     std::string TaskShader::GetShaderInfoLog(GLuint Shader)
     {
-        GLint iv;
+        GLint iv = 0;
         GLsizei si, so;
         gl.GetShaderiv(Shader, gl.INFO_LOG_LENGTH, &iv);
         si = iv;
